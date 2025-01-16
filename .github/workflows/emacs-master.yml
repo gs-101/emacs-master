@@ -1,0 +1,37 @@
+name: Update Emacs
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *"
+
+jobs:
+  update-emacs:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      id: checkout
+      uses: actions/checkout@v4
+    - name: Install Dependencies
+      id: dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y curl grep guix git gpg guile-3.0 guile-library
+    - name: Update Emacs
+      id: update
+      run: |
+        chmod +x bin/update-emacs
+        guile bin/update-emacs
+    - name: Commit
+      id: commit
+      run: |
+        git config --global user.name github-actions
+        git config --global user.email github-actions@example.com
+        git add emacs-master.scm
+        emacs_commit=$(grep "(define emacs-master-commit" emacs-master.scm | awk '{print $3}' | cut -c 2-41)
+        git commit -m "Update Emacs to $emacs_commit" --gpg-sign=$"GPG_KEY_ID"
+        git push --repo "https://gs-101:$GITHUB_TOKEN@github.com/gs-101/emacs-master"
+      env:
+       GPG_KEY: ${{ secrets.GPG_KEY }}
+       GPP_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+       GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
