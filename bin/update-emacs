@@ -1,0 +1,130 @@
+#!/usr/bin/env -S guile -e main -s
+!#
+
+;;; update-emacs --- Update emacs-master.scm to the latest Emacs
+;;; Copyright (C) 2023 Akib Azmain Turja <akib@disroot.org>
+;;; Copyright (C) 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
+
+;;; This file is not part of GNU Guix.
+;;;
+;;; This file is free software; you can redistribute it and/or modify it
+;;; under the terms of the GNU General Public License as published by
+;;; the Free Software Foundation; either version 3 of the License, or (at
+;;; your option) any later version.
+;;;
+;;; This file is distributed in the hope that it will be useful, but
+;;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;; GNU General Public License for more details.
+;;;
+;;; You should have received a copy of the GNU General Public License
+;;; along with this file.  If not, see <http://www.gnu.org/licenses/>.
+
+
+(use-modules (ice-9 textual-ports)
+             (ice-9 rdelim)
+             (srfi srfi-19)
+             (web client)
+             (os process)
+             (htmlprag))
+
+;;; Get the Nth among the element ELEM childs of SXML.
+(define (sxml-get sxml elem n)
+  (if (pair? sxml)
+      (let iter ((head (cdr sxml))
+                 (i 1))
+        (if (pair? head)
+            (if (and (pair? (car head))
+                     (eq? (caar head) elem))
+                (if (= i n)
+                    (car head)
+                    (iter (cdr head) (1+ i)))
+                (iter (cdr head) i))
+            #f))
+      #f))
+
+(define (emacs-get-latest-commit)
+  (call-with-values
+      (lambda ()
+        (http-get
+         "https://git.savannah.gnu.org/cgit/emacs.git/commit/"))
+    (lambda (_ response)
+      (cons (caddr (sxml-get
+                    (sxml-get
+                     (sxml-get
+                      (sxml-get
+                       (sxml-get
+                        (sxml-get
+                         (sxml-get
+                          (sxml-get
+                           (html->shtml response)
+                           'html 1)
+                          'body 1)
+                         'div 1)
+                        'div 1)
+                       'table 1)
+                      'tr 3)
+                     'td 1)
+                    'a 1))
+            (date->string (string->date (caddr (sxml-get
+                                                (sxml-get
+                                                 (sxml-get
+                                                  (sxml-get
+                                                   (sxml-get
+                                                    (sxml-get
+                                                     (sxml-get
+                                                      (html->shtml response)
+                                                      'html 1)
+                                                     'body 1)
+                                                    'div 1)
+                                                   'div 1)
+                                                  'table 1)
+                                                 'tr 2)
+                                                'td 2))
+                                        "~Y-~m-~d ~H:~M:~S ~z") "~s")))))
+
+(define (update-spec commit hash)
+  (define file "emacs-master.scm")
+  (define spec-beg ";;; !!! EMACS COMMIT AND HASH BEGIN !!!\n")
+  (define spec-end ";;; !!! EMACS COMMIT AND HASH END !!!\n")
+  (let read ((port (open-file file "r"))
+             (lines '()))
+    (let ((line (read-line port 'concat)))
+      (cond
+       ((eof-object? line)
+        (close-port port)
+        (set! port (open-file file "w"))
+        (set! lines (reverse! lines))
+        (let write-file ((lines lines))
+          (when (pair? lines)
+            (display (car lines) port)
+            (write-file (cdr lines))))
+        (close-port port))
+       ((equal? line spec-beg)
+        (set!
+         lines
+         (cons* spec-end
+                (format #f "(define emacs-master-hash ~S)\n" hash)
+                (format #f "(define emacs-master-time ~S)\n" (cdr commit))
+                (format #f "(define emacs-master-commit ~S)\n" (car commit))
+                spec-beg
+                lines))
+        (let read2 ()
+          (unless (equal? (read-line port 'concat) spec-end)
+            (read2)))
+        (read port lines))
+       (#t
+        (set! lines (cons line lines))
+        (read port lines))))))
+
+(define (get-hash uri)
+  (read-line (cdr (run-with-pipe "r" "./bin/get-hash.sh" uri))))
+
+(define (main _)
+  (let* ((commit (emacs-get-latest-commit))
+         (hash
+          (get-hash
+           (string-append
+            "https://git.savannah.gnu.org/cgit/emacs.git/snapshot/emacs-"
+            (car commit) ".tar.gz"))))
+    (update-spec commit hash)))
