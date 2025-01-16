@@ -1,0 +1,13 @@
+#+title: Emacs Master
+
+Guix channel featuring a build from the Emacs master branch.
+
+Not sure if it will work.
+
+* References
+
+Azmain Turja, A. (2023) “Guix-channel-emacs-master.” Available at: https://codeberg.org/akib/guix-channel-emacs-master (Accessed: January 16, 2025).
+
+Ranjan, D. (2024) “Divya-lambda.” Available at: https://codeberg.org/divyaranjan/divya-lambda (Accessed: January 16, 2025).
+
+Bakulin, S. “Sign git commits with GPG in GitHub Actions” Available at: https://gist.github.com/vansergen/88eb7e71fea2e3bdaf6aa3e752371eb7 (Accessed: January 16, 2025).
