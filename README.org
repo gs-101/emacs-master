@@ -2,7 +2,7 @@
 
 Guix channel featuring a build from the Emacs master branch.
 
-Not sure if it will work.
++Not sure if it will work.+ It works I guess, will check it out tomorrow to see if any commits are picked up.
 
 * References
 
