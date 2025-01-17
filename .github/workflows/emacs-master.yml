@@ -8,6 +8,8 @@ on:
 jobs:
   update-emacs:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
     - name: Checkout Repository
       id: checkout
