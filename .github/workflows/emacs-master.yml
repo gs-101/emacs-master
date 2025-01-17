@@ -21,7 +21,7 @@ jobs:
       id: update
       run: |
         chmod +x bin/update-emacs
-        guile bin/update-emacs
+        bin/update-emacs
     - name: Commit
       id: commit
       run: |
