@@ -2,7 +2,9 @@
 
 Guix channel featuring a build from the Emacs master branch.
 
-+Not sure if it will work.+ It works I guess, will check it out tomorrow to see if any commits are picked up.
++Not sure if it will work. It works I guess, will check it out tomorrow to see if any commits are picked up.+
+
+Guile script can't run the =get_hash= script to pick up the hashes. Also, there's an issue with the commit signing process.
 
 * References
 
