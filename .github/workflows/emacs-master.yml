@@ -22,6 +22,7 @@ jobs:
     - name: Update Emacs
       id: update
       run: |
+        chmod +x bin/get_hash.sh
         chmod +x bin/update-emacs
         bin/update-emacs
     - name: Import GPG Key
