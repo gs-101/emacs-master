@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Import GPG Key
-      run: echo $GPG_KEY | base64 --decode | gpg --batch --import
+      run: echo "$GPG_KEY" | base64 --decode | gpg --batch --import
       env:
         GPG_KEY: ${{ secrets.GPG_KEY }}
     - name: Custom GPG Signing Program
