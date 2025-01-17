@@ -51,6 +51,5 @@ jobs:
         git commit -m "Update Emacs to $emacs_commit"
         git push --repo "https://gs-101:$GITHUB_TOKEN@github.com/gs-101/emacs-master"
       env:
-       GPG_KEY: ${{ secrets.GPG_KEY }}
-       GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+       GPG_KEY_PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
