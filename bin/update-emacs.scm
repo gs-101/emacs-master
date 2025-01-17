@@ -118,7 +118,7 @@
         (read port lines))))))
 
 (define (get-hash uri)
-  (read-line (cdr (run-with-pipe "r" "./bin/get-hash.sh" uri))))
+  (read-line (cdr (run-with-pipe "r" "bin/get_hash.sh" uri))))
 
 (define (main _)
   (let* ((commit (emacs-get-latest-commit))

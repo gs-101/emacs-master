@@ -23,8 +23,8 @@ jobs:
       id: update
       run: |
         chmod +x bin/get_hash.sh
-        chmod +x bin/update-emacs
-        bin/update-emacs
+        chmod +x bin/update-emacs.scm
+        bin/update-emacs.scm
     - name: Import GPG Key
       run: echo "$GPG_KEY" | base64 --decode | gpg --batch --import
       env:
