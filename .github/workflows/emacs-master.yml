@@ -9,6 +9,19 @@ jobs:
   update-emacs:
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout Repository
+      id: checkout
+      uses: actions/checkout@v4
+    - name: Install Dependencies
+      id: dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y curl grep guix git gpg guile-3.0 guile-library
+    - name: Update Emacs
+      id: update
+      run: |
+        chmod +x bin/update-emacs
+        bin/update-emacs
     - name: Import GPG Key
       run: echo "$GPG_KEY" | base64 --decode | gpg --batch --import
       env:
@@ -30,19 +43,6 @@ jobs:
         git config --global user.email "github-actions@example.com"
       env:
         GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
-    - name: Checkout Repository
-      id: checkout
-      uses: actions/checkout@v4
-    - name: Install Dependencies
-      id: dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y curl grep guix git gpg guile-3.0 guile-library
-    - name: Update Emacs
-      id: update
-      run: |
-        chmod +x bin/update-emacs
-        bin/update-emacs
     - name: Commit
       id: commit
       run: |
