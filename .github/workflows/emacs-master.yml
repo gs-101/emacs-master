@@ -30,7 +30,7 @@ jobs:
       run: |
         rm -rf /tmp/gpg.sh
         echo "#!/bin/bash" >> /tmp/gpg.sh
-        echo "gpg --batch --pinentry-mode=loopback --passphrase $GPG_KEY_PASSPHRASE $@" >> /tmp/gpg.sh
+        echo "gpg --batch --pinentry-mode=loopback --passphrase \$GPG_KEY_PASSPHRASE \"\$@\"" >> /tmp/gpg.sh
         chmod +x /tmp/gpg.sh
       env:
         GPG_KEY_PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
@@ -48,8 +48,9 @@ jobs:
       run: |
         git add emacs-master.scm
         emacs_commit=$(grep "(define emacs-master-commit" emacs-master.scm | awk '{print $3}' | cut -c 2-41)
-        git commit -m "Update Emacs to $emacs_commit"
+        git commit -m "Update Emacs to $emacs_commit" --gpg-sign=$GPG_KEY_ID
         git push --repo "https://gs-101:$GITHUB_TOKEN@github.com/gs-101/emacs-master"
       env:
+       GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
        GPG_KEY_PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
