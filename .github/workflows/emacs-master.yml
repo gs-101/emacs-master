@@ -12,15 +12,12 @@ jobs:
       contents: write
     steps:
     - name: Checkout Repository
-      id: checkout
       uses: actions/checkout@v4
     - name: Install Dependencies
-      id: dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y curl grep guix git gpg guile-3.0 guile-library
     - name: Update Emacs
-      id: update
       run: |
         chmod +x bin/get_hash.sh
         chmod +x bin/update-emacs.scm
@@ -44,9 +41,7 @@ jobs:
         git config gpg.program /tmp/gpg.sh
       env:
         GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Commit
-      id: commit
       run: |
         git add emacs-master.scm
         emacs_commit=$(grep "(define emacs-master-commit" emacs-master.scm | awk '{print $3}' | cut -c 2-41)
