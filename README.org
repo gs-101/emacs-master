@@ -118,14 +118,14 @@ These dependencies are primarily used by the scripts. Guix is used to get the ha
 
 **** Update Emacs
 
-This runs the scripts from Guix-channel-emacs-master for getting the latest commit. [[./bin/update-emacs.scm][update-emacs]] gets the commit and time, and we rely on [[./bin/get_hash.sh][get_hash]] for, well, getting the hash.
+This runs the scripts from Guix-channel-emacs-master for getting the latest commit. [[./bin/update-emacs][update-emacs]] gets the commit and time, and we rely on [[./bin/get_hash.sh][get_hash]] for, well, getting the hash.
 
 #+begin_src yaml
       - name: Update Emacs
         run: |
           chmod +x bin/get_hash.sh
-          chmod +x bin/update-emacs.scm
-          bin/update-emacs.scm
+          chmod +x bin/update-emacs
+          bin/update-emacs
 #+end_src
 
 **** GPG Key
