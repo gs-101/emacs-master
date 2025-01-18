@@ -1,19 +1,271 @@
 #+title: Emacs Master
+#+OPTIONS: f:t
 
-Guix channel featuring a build from the Emacs master branch.
+Guix channel featuring automated builds that run every two hours, updating the packages to the latest [[https://git.savannah.gnu.org/cgit/emacs.git][Savannah]] commit.
 
-+Not sure if it will work. It works I guess, will check it out tomorrow to see if any commits are picked up.+
+This channel is sort of a fork of divya-lambda[fn:1], which features a non-automated build of =emacs-master=, taken from Guix-channel-emacs-master[fn:2].
 
-+Guile script can't run the =get_hash= script to pick up the hashes. Also, there's an issue with the commit signing process.+
+Commit updates are made with a [[./.github/workflows/emacs-master.yml][GitHub Actions workflow]], and are automatically signed[fn:3].
 
-+I just need to make the script work now!+
+* Channel Definition
 
-Everything works now! I'll update this README later.
+Use this for adding this channel to your configuration:
+
+#+begin_src scheme
+  (cons* (channel
+          (name 'emacs-master)
+          (url "https://github.com/gs-101/emacs-master")
+          (branch "main")
+          (introduction
+           (make-channel-introduction
+            ;; To be decided
+            (openpgp-fingerprint
+             "3049 BF6C 0829 94E4 38ED  4A15 3033 E0E9 F7E2 5FE4"))))
+         %default-channels)
+#+end_src
+
+* Packages
+
+Since this takes packages from divya-lambda, the following packages are available:
+
+- =emacs-master= ::
+
+  Regular package.
+
+- =emacs-master-pgtk= ::
+
+  Package featuring a GTK build. Best suited for Wayland users.
+
+- =emacs-lucid= (which was [[https://lists.gnu.org/archive/html/guix-patches/2024-12/msg02003.html][submitted as a package]]) ::
+
+  Package using the [[https://gitlab.freedesktop.org/xorg/lib/libxaw][Lucid (Athena)]] X toolkit. Best suited for those on X11.
+
+  Some recommend it over PGTK, so try both of them out and use what best suits you.
+
+- =emacs-master-lucid= ::
+
+  The master (latest commits) version of =emacs-lucid=.
+
+- =emacs-master-xwidgets= ::
+
+  Primarily used for WebKit.
+
+- =emacs-master-igc= ::
+
+  New garbage collection method in development.
+
+* Workflow
+
+In case I stop maintaining this and someone else becomes interested, this section details how the workflow works.
+
+** Scheduling
+
+Scheduling is done through the use of a cron job, taken from copr-lutris-git[fn:4].
+
+At first, it ran every hour:
+
+#+begin_src yaml
+  on:
+    workflow_dispatch:
+    schedule:
+      - cron: "0 * * * *"
+#+end_src
+
+But then I changed it to every two hours because I thought I was overloading savannah:
+
+#+begin_src yaml
+  on:
+    workflow_dispatch:
+    schedule:
+      - cron: "0 */2 * * *"
+#+end_src
+
+** The Job
+
+To allow GitHub Actions to commit to repository, you need to give the job write permissions:
+
+#+begin_src yaml
+  jobs:
+    update-emacs:
+      runs-on: ubuntu-latest
+      permissions:
+        contents: write
+#+end_src
+
+*** Steps
+
+**** Checkout
+
+This should've been clear to me from the start, but, to have Actions actually work with your repository, you have to use the checkout action:
+
+#+begin_src yaml
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+#+end_src
+
+This makesthe runner clone your repository.
+
+**** Dependencies
+
+These dependencies are primarily used by the scripts. Guix is used to get the hash of the Emacs commit, in the [[./bin/get_hash.sh][get_hash]] script. Since we're not installing anything, no extra setup for Guix is required.
+
+#+begin_src yaml
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl grep guix git gpg guile-3.0 guile-library
+#+end_src
+
+**** Update Emacs
+
+This runs the scripts from Guix-channel-emacs-master for getting the latest commit. [[./bin/update-emacs.scm][update-emacs]] gets the commit and time, and we rely on [[./bin/get_hash.sh][get_hash]] for, well, getting the hash.
+
+#+begin_src yaml
+      - name: Update Emacs
+        run: |
+          chmod +x bin/get_hash.sh
+          chmod +x bin/update-emacs.scm
+          bin/update-emacs.scm
+#+end_src
+
+**** GPG Key
+
+This is where we use those instructions from “Sign git commits with GPG in GitHub Actions”. This is the workflow's key, not yours.
+
+We'll setup some *repository* secrets. See how /repository/ is in bold? That indicates another mistake I made during this. I thought that GitHub Actions used /enviroment/ secrets, so I wasted some time on this.
+
+[[./images/gpg_secrets.png]]
+
+In case you didn't know how, you can generate a GPG key with:
+
+#+begin_src sh
+  gpg --full-generate-key
+#+end_src
+
+1. When choosing a key type, you can pick a signing only one if you want. We have no need for encryption here. I always choose RSA.
+2. For the keysize, same thing, you choose. I always go for 4096 because there's no issue in doing this.
+3. Make it not expore if you wnat, though, that can be insecure.
+4. Use either your real name or your GitHub username.
+5. THis should be the e-mail address you use for GitHub.
+6. Add a descriptive comment here, you'll start to make a lot of these once you get used to them. Mine is "GitHub Actions Key".
+7. Make a password.
+8. There is no other step, that was it!
+
+Now we'll get to the secrets. Save them to Settings \rightarrow Secrets and variables \rightarrow Actions \rightarrow Repository secrets with these exact names.
+
+- ~GPG_KEY_PASSPHRASE~ ::
+
+  This is the password you set up for the key.
+
+- ~GPG_KEY_ID~ ::
+
+  This is the identification of the key, you can get this with:
+
+  #+begin_src sh
+    gpg --list-secret-keys --keyid-format=long
+  #+end_src
+
+  #+RESULTS:
+  #+begin_example
+    sec   something/YOU-WANT-THIS-HERE 1111-11-11 [SC] [expires: 9999-99-99]
+          don't-bother-with-this
+    uid                 [ultimate] your-name (GitHub Actions Key) <the-email-you-used@address.com>
+  #+end_example
+
+  You'll want the numbers and letters that are in the same position as =YOU-WANT-THIS-HERE= in the example above.
+
+  =your-name= and =the-email-you-used@address.com= are also important, but will be explained later.
+
+- ~GPG_KEY~ ::
+
+  THis is your key itself, exported in base64. Based on the previous variable, you'd run:
+
+  #+begin_src sh
+    gpg --export-secret-keys YOU-WANT-THIS-HERE | base64
+  #+end_src
+
+  This will give you even more numbers and letters.
+
+  #+begin_quote
+  [!NOTE]
+
+  If your terminal added newlines for the display, before adding this output to your secrets, remove the newlines and make everything a single line. I'm not sure if this is necessary, but seems like a good practice.
+  #+end_quote
+
+***** Import GPG Key
+
+This just makes the runner import your base64 encoded key:
+
+#+begin_src yaml
+      - name: Import GPG Key
+        run: echo "$GPG_KEY" | base64 --decode | gpg --batch --import
+        env:
+          GPG_KEY: ${{ secrets.GPG_KEY }}
+#+end_src
+
+***** Custom GPG Signing Program
+
+Used in the next step for Git. Makes it so that the runner always inputs the passphrase, to keep the process automatic. It's not like we can access it to input the password, and even if we could, that would be a manual step.
+
+#+begin_src yaml
+      - name: Custom GPG Signing Program
+        run: |
+          rm -rf /tmp/gpg.sh
+          echo "#!/bin/bash" >> /tmp/gpg.sh
+          echo "gpg --batch --pinentry-mode=loopback --passphrase \$GPG_KEY_PASSPHRASE \"\$@\"" >> /tmp/gpg.sh
+          chmod +x /tmp/gpg.sh
+        env:
+          GPG_KEY_PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
+#+end_src
+
+Not sure if the =rm -rf= would be necessary, as it would not be there anyway, but it's part of the instructions so I left it there. Try doing a run without it to see if it's necessary.
+
+***** Setup Git
+
+Nothing out of the ordinary. This just makes Git use our key.
+
+#+begin_src yaml
+      - name: Setup Git
+        run: |
+          git config commit.gpgsign true
+          git config user.signingkey $GPG_KEY_ID
+          git config gpg.program /tmp/gpg.sh
+        env:
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+#+end_src
+
+***** Commit
+
+#+begin_src yaml
+      - name: Commit
+        run: |
+          git add emacs-master.scm
+          emacs_commit=$(grep "(define emacs-master-commit" emacs-master.scm | awk '{print $3}' | cut -c 2-41)
+          git commit -m "feat (emacs-master.scm): Update Emacs to $emacs_commit" --gpg-sign=$GPG_KEY_ID
+          git push --set-upstream origin main
+        env:
+         GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+         GPG_KEY_PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
+         GIT_COMMITTER_NAME: ${{ secrets.GIT_COMMITTER_NAME }}
+         GIT_COMMITTER_EMAIL: ${{ secrets.GIT_COMMITTER_EMAIL }}
+         GIT_AUTHOR_NAME: github-actions
+         GIT_AUTHOR_EMAIL: github-actions@example.com
+#+end_src
+
+Again, not sure if =--gpg-sign=$GPG_KEY_ID= is necessary, but I don't want to change as everything is working now. Try doing a run without it to see the outcome.
+
+Now, remember when I said that =your-name= and =the-email-you-used@address.com= were important? This is where they are used. Add them as ~GIT_COMMITTER_NAME~ and ~GIT_COMMITTER_EMAIL~, respectively.
+
+~GIT_AUTHOR_NAME~ should preferably be the name of your workflow bot (we use GitHub Actions, so I named it ~github-actions~ here). ~GIT_AUTHOR_EMAIL~ can be anything.
+
+And that was it for the workflow! Hope you could understand everything.
 
 * References
 
-Azmain Turja, A. (2023) “Guix-channel-emacs-master.” Available at: https://codeberg.org/akib/guix-channel-emacs-master (Accessed: January 16, 2025).
+[fn:1] Ranjan, D. (2024) “Divya-lambda.” Available at: https://codeberg.org/divyaranjan/divya-lambda (Accessed: January 16, 2025).
 
-Ranjan, D. (2024) “Divya-lambda.” Available at: https://codeberg.org/divyaranjan/divya-lambda (Accessed: January 16, 2025).
+[fn:2] Azmain Turja, A. (2023) “Guix-channel-emacs-master.” Available at: https://codeberg.org/akib/guix-channel-emacs-master (Accessed: January 16, 2025).
 
-Bakulin, S. “Sign git commits with GPG in GitHub Actions” Available at: https://gist.github.com/vansergen/88eb7e71fea2e3bdaf6aa3e752371eb7 (Accessed: January 16, 2025).
+[fn:3] Bakulin, S. “Sign git commits with GPG in GitHub Actions” Available at: https://gist.github.com/vansergen/88eb7e71fea2e3bdaf6aa3e752371eb7 (Accessed: January 16, 2025).
+
+[fn:4] Greiner, J. (2025) “Projectsynchro/copr-lutris-git.” Available at: https://github.com/ProjectSynchro/copr-lutris-git (Accessed: January 18, 2025).
