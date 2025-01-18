@@ -18,7 +18,7 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with this file.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (emacs-master emacs-master)
+(define-module (emacs-master)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix gexp)
