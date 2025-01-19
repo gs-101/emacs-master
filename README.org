@@ -175,12 +175,11 @@ Now we'll get to the secrets. Save them to Settings \rightarrow Secrets and vari
     gpg --list-secret-keys --keyid-format=long
   #+end_src
 
-
-  #+begin_quote
+  #+begin_src text
     sec   something/YOU-WANT-THIS-HERE 1111-11-11 [SC] [expires: 9999-99-99]
           don't-bother-with-this
     uid                 [ultimate] your-name (GitHub Actions Key) <the-email-you-used@address.com>
-  #+end_quote
+  #+end_src
 
   You'll want the numbers and letters that are in the same position as =YOU-WANT-THIS-HERE= in the example above.
 
