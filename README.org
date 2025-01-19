@@ -1,6 +1,8 @@
 #+title: Emacs Master
 #+OPTIONS: f:t
 
+#+html: <a href="https://github.com/gs-101/emacs-master/actions/workflows/emacs-master.yml"><img src="https://github.com/gs-101/emacs-master/actions/workflows/emacs-master.yml/badge.svg"></a>
+
 Guix channel featuring automated builds that run every two hours, updating the packages to the latest [[https://git.savannah.gnu.org/cgit/emacs.git][Savannah]] commit.
 
 This channel is sort of a fork of divya-lambda[fn:1], which features a non-automated build of =emacs-master=, taken from Guix-channel-emacs-master[fn:2].
