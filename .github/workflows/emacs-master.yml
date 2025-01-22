@@ -29,7 +29,7 @@ jobs:
     - name: Compare Commits
       id: compare-commits
       run: |
-        if [ "$new-commit" != "$current-commit" ]; then
+        if [ "${{ env.new-commit }}" != "${{ env.current-commit }}" ]; then
           echo "The commits are different. Continue the workflow."
           echo "different-commit='true'" >> $GITHUB_OUTPUT
         else
