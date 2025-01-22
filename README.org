@@ -126,16 +126,46 @@ These dependencies are primarily used by the scripts. Guix is used to get the ha
           sudo apt-get install -y curl grep guix git gpg guile-3.0 guile-library
 #+end_src
 
+**** Get Curent Commit
+
+This is going to be needed later. It cuts the exact space where the commit hash is found, storing it in a enviroment variable, so it can be used by the other steps.
+
+#+begin_src yaml
+      - name: Get Current Commit
+        run: |
+          echo "current-commit=$(grep "(define emacs-master-commit" emacs-master.scm | awk '{print $3}' | cut -c 2-41)" >> $GITHUB_ENV
+#+end_src
+
 **** Update Emacs
 
 This runs the scripts from Guix-channel-emacs-master for getting the latest commit. [[./bin/update-emacs][update-emacs]] gets the commit and time, and we rely on [[./bin/get_hash.sh][get_hash]] for, well, getting the hash.
 
 #+begin_src yaml
-      - name: Update Emacs
+  - name: Update Emacs
+    run: |
+      chmod +x bin/get_hash.sh
+      chmod +x bin/update-emacs
+      bin/update-emacs
+      echo "new-commit=$(grep "(define emacs-master-commit" emacs-master.scm | awk '{print $3}' | cut -c 2-41)" >> $GITHUB_ENV
+#+end_src
+
+We also create another variable, ~new-commit~, to be usd in the next step: Compare Commits.
+
+**** Compare Commits
+
+Despite what the echoed messages say, this doesn't make the workflow exit directly. It's a simple comparison for defining a boolean variable to be used by the other steps.
+
+#+begin_src yaml
+      - name: Compare Commits
+        id: compare-commits
         run: |
-          chmod +x bin/get_hash.sh
-          chmod +x bin/update-emacs
-          bin/update-emacs
+          if [ "$new-commit" != "$current-commit" ]; then
+            echo "The commits are different. Continue the workflow."
+            echo "different-commit='true'" >> $GITHUB_OUTPUT
+          else
+            echo "The commits are the same. Exiting the workflow..."
+            echo "different-commit='false'" >> $GITHUB_OUTPUT
+          fi
 #+end_src
 
 **** GPG Key
@@ -207,10 +237,13 @@ This just makes the runner import your base64 encoded key:
 
 #+begin_src yaml
       - name: Import GPG Key
+        if: ${{ contains(steps.compare-commits.Outputs.different-commit, 'true') }}
         run: echo "$GPG_KEY" | base64 --decode | gpg --batch --import
         env:
           GPG_KEY: ${{ secrets.GPG_KEY }}
 #+end_src
+
+The ~if~ statement comes from our previous comparison step. This and the next steps only run if ~different-commit~ is ~true~.
 
 ***** Custom GPG Signing Program
 
@@ -218,6 +251,7 @@ Used in the next step for Git. Makes it so that the runner always inputs the pas
 
 #+begin_src yaml
       - name: Custom GPG Signing Program
+        if: ${{ contains(steps.compare-commits.Outputs.different-commit, 'true') }}
         run: |
           rm -rf /tmp/gpg.sh
           echo "#!/bin/bash" >> /tmp/gpg.sh
@@ -235,6 +269,7 @@ Nothing out of the ordinary. This just makes Git use our key.
 
 #+begin_src yaml
       - name: Setup Git
+        if: ${{ contains(steps.compare-commits.Outputs.different-commit, 'true') }}
         run: |
           git config commit.gpgsign true
           git config user.signingkey $GPG_KEY_ID
@@ -247,6 +282,7 @@ Nothing out of the ordinary. This just makes Git use our key.
 
 #+begin_src yaml
       - name: Commit
+        if: ${{ contains(steps.compare-commits.Outputs.different-commit, 'true') }}
         run: |
           git add emacs-master.scm
           emacs_commit=$(grep "(define emacs-master-commit" emacs-master.scm | awk '{print $3}' | cut -c 2-41)
