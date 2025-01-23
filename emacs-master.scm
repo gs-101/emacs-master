@@ -49,10 +49,13 @@
        (sha256
         (base32 emacs-master-hash))
        (patches
-        (append
-         (delete "emacs-next-native-comp-fix-filenames.patch"
-                 (origin-patches (package-source emacs-next-minimal)))
-         (list (search-patches "emacs-master-native-comp-fix-filenames.patch"))))))))
+        (search-patches "emacs-disable-jit-compilation.patch"
+                        "emacs-next-exec-path.patch"
+                        "emacs-fix-scheme-indent-function.patch"
+                        "emacs-next-native-comp-driver-options.patch"
+                        "emacs-master-native-comp-fix-filenames.patch"
+                        "emacs-native-comp-pin-packages.patch"
+                        "emacs-pgtk-super-key-fix.patch"))))))
 
 (define* (emacs->emacs-master emacs
                               #:optional name
