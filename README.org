@@ -28,7 +28,7 @@ Use this for adding this channel to your configuration:
           (branch "main")
           (introduction
            (make-channel-introduction
-            "95fbc3a9aae687b17028a021ee2b4723580b2aad"
+            "568579841d0ca41a9d222a2cfcad9a7367f9073b"
             (openpgp-fingerprint
              "3049 BF6C 0829 94E4 38ED  4A15 3033 E0E9 F7E2 5FE4"))))
          %default-channels)
