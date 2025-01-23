@@ -48,7 +48,11 @@
              emacs-master-commit ".tar.gz"))
        (sha256
         (base32 emacs-master-hash))
-       (patches (origin-patches (package-source emacs-next-minimal)))))))
+       (patches
+        (append
+         (delete "emacs-next-native-comp-fix-filenames.patch"
+                 (origin-patches (package-source emacs-next-minimal)))
+         (list (search-patches "emacs-master-native-comp-fix-filenames.patch"))))))))
 
 (define* (emacs->emacs-master emacs
                               #:optional name
