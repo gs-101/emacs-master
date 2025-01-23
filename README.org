@@ -3,14 +3,6 @@
 
 #+html: <a href="https://github.com/gs-101/emacs-master/actions/workflows/emacs-master.yml"><img src="https://github.com/gs-101/emacs-master/actions/workflows/emacs-master.yml/badge.svg"></a>
 
-#+begin_quote
-[!WARNING]
-
-Savannah repositories seem to be currently be inaccessible, so this channel doesn't work for now! I'll submit this to [[https://toys.whereis.social/][Toys]] once it's ready.
-
-<2025-01-19 sun>
-#+end_quote
-
 Guix channel featuring automated builds that run every two hours, updating the packages to the latest [[https://git.savannah.gnu.org/cgit/emacs.git][Savannah]] commit.
 
 This channel is sort of a fork of divya-lambda[fn:1], which features a non-automated build of =emacs-master=, taken from Guix-channel-emacs-master[fn:2].
