@@ -131,7 +131,7 @@ Index: emacs-next/src/comp.c
 +
 +  if (!NILP (bogus_dirs))
 +  {
-+    tail = CALL2I (split-string, bogus_dirs, build_string (":"));
++    tail = CALLNI (split-string, bogus_dirs, build_string (":"));
 +
 +    FOR_EACH_TAIL_SAFE (tail)
 +      {
