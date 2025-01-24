@@ -251,15 +251,12 @@ Used in the next step for Git. Makes it so that the runner always inputs the pas
       - name: Custom GPG Signing Program
         if: ${{ contains(steps.compare-commits.Outputs.different-commit, 'true') }}
         run: |
-          rm -rf /tmp/gpg.sh
           echo "#!/bin/bash" >> /tmp/gpg.sh
           echo "gpg --batch --pinentry-mode=loopback --passphrase \$GPG_KEY_PASSPHRASE \"\$@\"" >> /tmp/gpg.sh
           chmod +x /tmp/gpg.sh
         env:
           GPG_KEY_PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
 #+end_src
-
-Not sure if the =rm -rf= would be necessary, as it would not be there anyway, but it's part of the instructions so I left it there. Try doing a run without it to see if it's necessary.
 
 ***** Setup Git
 
