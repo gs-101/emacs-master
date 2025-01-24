@@ -22,7 +22,7 @@ Use this for adding this channel to your configuration:
 #+begin_src scheme
   (cons* (channel
           (name 'emacs-master)
-          (url "https://github.com/gs-101/emacs-master")
+          (url "https://github.com/gs-101/emacs-master.git")
           (branch "main")
           (introduction
            (make-channel-introduction
