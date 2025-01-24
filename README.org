@@ -3,9 +3,15 @@
 
 #+html: <a href="https://github.com/gs-101/emacs-master/actions/workflows/emacs-master.yml"><img src="https://github.com/gs-101/emacs-master/actions/workflows/emacs-master.yml/badge.svg"></a>
 
+#+begin_quote
+[!NOTE]
+
+[[https://codeberg.org/akib/guix-channel-emacs-master][guix-channel-emacs-master]] is back! It's the original, so please try it out first before this channel.
+#+end_quote
+
 Guix channel featuring automated builds that run every two hours, updating the packages to the latest [[https://git.savannah.gnu.org/cgit/emacs.git][Savannah]] commit.
 
-This channel is sort of a fork of divya-lambda[fn:1], which features a non-automated build of =emacs-master=, taken from Guix-channel-emacs-master[fn:2].
+This channel is sort of a fork of divya-lambda[fn:1], which features a non-automated build of =emacs-master=, taken from guix-channel-emacs-master[fn:2].
 
 Commit updates are made with a [[./.github/workflows/emacs-master.yml][GitHub Actions workflow]], and are automatically signed[fn:3].
 
@@ -130,7 +136,7 @@ This is going to be needed later. It cuts the exact space where the commit hash 
 
 **** Update Emacs
 
-This runs the scripts from Guix-channel-emacs-master for getting the latest commit. [[./bin/update-emacs][update-emacs]] gets the commit and time, and we rely on [[./bin/get_hash.sh][get_hash]] for, well, getting the hash.
+This runs the scripts from guix-channel-emacs-master for getting the latest commit. [[./bin/update-emacs][update-emacs]] gets the commit and time, and we rely on [[./bin/get_hash.sh][get_hash]] for, well, getting the hash.
 
 #+begin_src yaml
   - name: Update Emacs
@@ -301,7 +307,7 @@ And that was it for the workflow! Hope you could understand everything.
 
 [fn:1] Ranjan, D. (2024) “Divya-lambda.” Available at: https://codeberg.org/divyaranjan/divya-lambda (Accessed: January 16, 2025).
 
-[fn:2] Azmain Turja, A. (2023) “Guix-channel-emacs-master.” Available at: https://codeberg.org/akib/guix-channel-emacs-master (Accessed: January 16, 2025).
+[fn:2] Azmain Turja, A. (2023) “guix-channel-emacs-master.” Available at: https://codeberg.org/akib/guix-channel-emacs-master (Accessed: January 16, 2025).
 
 [fn:3] Bakulin, S. “Sign git commits with GPG in GitHub Actions” Available at: https://gist.github.com/vansergen/88eb7e71fea2e3bdaf6aa3e752371eb7 (Accessed: January 16, 2025).
 
