@@ -44,15 +44,11 @@ Since this takes packages from divya-lambda, the following packages are availabl
 
   Package featuring a GTK build. Best suited for Wayland users.
 
-- =emacs-lucid= (which was [[https://lists.gnu.org/archive/html/guix-patches/2024-12/msg02003.html][submitted as a package]]) ::
+- =emacs-master-lucid= ::
 
   Package using the [[https://gitlab.freedesktop.org/xorg/lib/libxaw][Lucid (Athena)]] X toolkit. Best suited for those on X11.
 
   Some recommend it over PGTK, so try both of them out and use what best suits you.
-
-- =emacs-master-lucid= ::
-
-  The master (latest commits) version of =emacs-lucid=.
 
 - =emacs-master-xwidgets= ::
 
