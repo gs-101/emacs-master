@@ -9,7 +9,7 @@
 
 This channel features automation through GitHub Actions. That means bugs are to be expected.
 
-If you want an experience close to source, check out the built-in [[https://packages.guix.gnu.org/packages/emacs-next/][emacs-next]] packages, or the ones available at the [[https://codeberg.org/divyaranjan/divya-lambda][divya-lambda]] channel.
+If you want a safer experience but still close to source, check out the built-in [[https://packages.guix.gnu.org/packages/emacs-next/][emacs-next]] packages, or the ones available at the [[https://codeberg.org/divyaranjan/divya-lambda][divya-lambda]] channel.
 #+end_quote
 
 Guix channel featuring automated builds that run every two hours, updating the packages to the latest [[https://git.savannah.gnu.org/cgit/emacs.git][Savannah]] commit.
