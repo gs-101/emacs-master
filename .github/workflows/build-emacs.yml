@@ -1,9 +1,9 @@
 name: Build Emacs
 
-on:
-  workflow_run:
-    workflows: [Update Emacs]
-    types: [completed]
+# on:
+#   workflow_run:
+#     workflows: [Update Emacs]
+#     types: [completed]
 
 jobs:
   build-emacs:
