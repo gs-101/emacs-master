@@ -9,6 +9,14 @@ jobs:
   build-emacs:
     runs-on: ubuntu-latest
     steps:
+    - name: Guix Cache
+      uses: actions/cache@v4.2.0
+      with:
+        path: ~/.cache/guix
+        # Use a key that (almost) never matches
+        key: guix-cache-${{ github.sha }}
+        restore-keys: |
+          guix-cache-
     - name: Install Guix
       uses: PromyLOPh/guix-install-action@v1.5
       with:
