@@ -71,23 +71,3 @@ jobs:
        GIT_COMMITTER_EMAIL: ${{ secrets.GIT_COMMITTER_EMAIL }}
        GIT_AUTHOR_NAME: github-actions
        GIT_AUTHOR_EMAIL: github-actions@example.com
-  build-emacs:
-    needs: update-emacs
-    runs-on: ubuntu-latest
-    steps:
-    - name: Install Guix
-      uses: PromyLOPh/guix-install-action@v1.5
-      with:
-        channels: |-
-          (cons* (channel
-                  (name 'emacs-master)
-                  (url "https://github.com/gs-101/emacs-master.git")
-                  (branch "main")
-                  (introduction
-                   (make-channel-introduction
-                    "568579841d0ca41a9d222a2cfcad9a7367f9073b"
-                    (openpgp-fingerprint
-                     "3049 BF6C 0829 94E4 38ED  4A15 3033 E0E9 F7E2 5FE4"))))
-                 %default-channels)
-    - name: Build Emacs
-      run: guix build emacs-master
