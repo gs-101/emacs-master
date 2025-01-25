@@ -7,7 +7,9 @@
 #+begin_quote
 [!NOTE]
 
-[[https://codeberg.org/akib/guix-channel-emacs-master][guix-channel-emacs-master]] is back! It's the original, so please try it out first before this channel.
+This channel features automation through GitHub Actions. That means bugs are to be expected.
+
+If you want an experience close to source, check out the built-in [[https://packages.guix.gnu.org/packages/emacs-next/][emacs-next]] packages, or the ones available at the [[https://codeberg.org/divyaranjan/divya-lambda][divya-lambda]] channel.
 #+end_quote
 
 Guix channel featuring automated builds that run every two hours, updating the packages to the latest [[https://git.savannah.gnu.org/cgit/emacs.git][Savannah]] commit.
