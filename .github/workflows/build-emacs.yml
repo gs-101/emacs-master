@@ -24,4 +24,4 @@ jobs:
                      "3049 BF6C 0829 94E4 38ED  4A15 3033 E0E9 F7E2 5FE4"))))
                  %default-channels)
     - name: Build Emacs
-      run: guix build emacs-master
+      run: guix build emacs-master --fallback
