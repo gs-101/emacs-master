@@ -7,7 +7,6 @@ on:
 
 jobs:
   build-emacs:
-    needs: update-emacs
     runs-on: ubuntu-latest
     steps:
     - name: Install Guix
