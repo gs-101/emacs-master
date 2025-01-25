@@ -1,7 +1,8 @@
 #+title: Emacs Master
 #+OPTIONS: f:t
 
-#+html: <a href="https://github.com/gs-101/emacs-master/actions/workflows/emacs-master.yml"><img src="https://github.com/gs-101/emacs-master/actions/workflows/emacs-master.yml/badge.svg"></a>
+#+html: <a href="https://github.com/gs-101/emacs-master/actions/workflows/update-emacs.yml"><img src="https://github.com/gs-101/emacs-master/actions/workflows/update-emacs.yml/badge.svg"></a>
+#+html: <a href="https://github.com/gs-101/emacs-master/actions/workflows/build-emacs.yml"><img src="https://github.com/gs-101/emacs-master/actions/workflows/build-emacs.yml/badge.svg"></a>
 
 #+begin_quote
 [!NOTE]
