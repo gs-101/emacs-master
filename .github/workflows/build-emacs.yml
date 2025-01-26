@@ -17,10 +17,6 @@ jobs:
         key: guix-cache-${{ github.sha }}
         restore-keys: |
           guix-cache-
-    - name: Update CA Certificates
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y ca-certificates
     - name: Install Guix
       uses: PromyLOPh/guix-install-action@v1.5
       with:
@@ -36,4 +32,4 @@ jobs:
                      "3049 BF6C 0829 94E4 38ED  4A15 3033 E0E9 F7E2 5FE4"))))
                  %default-channels)
     - name: Build Emacs
-      run: guix build emacs-master --fallback
+      run: guix build emacs-master -v 3 --debug=5
