@@ -235,6 +235,16 @@ Index: emacs-next/lisp/startup.el
  (defun startup--rescale-elt-match-p (font-pattern font-object)
    "Test whether FONT-OBJECT matches an element of `face-font-rescale-alist'.
  FONT-OBJECT is a font-object that specifies a font to test.
+@@ -778,2 +778,2 @@ It is the default value of the variable `top-level'."
+       (unwind-protect
+ 	  (command-line)
+
+-        (when (featurep 'native-compile)
+-          (startup--update-eln-cache))
+-
+ 	;; Do this again, in case .emacs defined more abbreviations.
+ 	(if default-directory
+ 	    (setq default-directory (abbreviate-file-name default-directory)))
 @@ -1383,12 +1368,6 @@ please check its value")
        startup-init-directory)))
    (setq early-init-file user-init-file)
