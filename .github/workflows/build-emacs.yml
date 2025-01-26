@@ -27,5 +27,7 @@ jobs:
         echo "(cons* (channel (name 'emacs-master) (url \"https://github.com/gs-101/emacs-master.git\") (branch \"main\") (introduction (make-channel-introduction \"568579841d0ca41a9d222a2cfcad9a7367f9073b\" (openpgp-fingerprint \"3049 BF6C 0829 94E4 38ED  4A15 3033 E0E9 F7E2 5FE4\")))) %default-channels)" >> ~/.config/guix/channels.scm
     - name: Build Emacs
       run: |
-        guix pull
+        guix pull -v 0
+        export PATH="$HOME/.config/guix/current/bin:$PATH"
+        export INFOPATH="$HOME/.config/guix/current/share/info:$INFOPATH"
         guix build emacs-master --fallback
