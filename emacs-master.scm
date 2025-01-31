@@ -172,9 +172,9 @@
        (method git-fetch)
        (uri (git-reference
              (url "https://git.savannah.gnu.org/git/emacs.git")
-             (commit "6225610e8af02ece7ef15d182d83f21997197334")))
+             (commit "6f7e916a6c80df11bf169587913fb0443f6b5490")))
        (sha256
-        (base32 "03v7mvpm79mi2nv4y35ysa7v25mmm4s6qcbx0rksz9520xdgf78i"))
+        (base32 "1izl71hbnmfrib8nk076zxzzdsfv7dqb83p1k1as07hl3my7lgcg"))
        (patches (origin-patches (package-source emacs-master-minimal)))))))
 
 ;; PGTK
