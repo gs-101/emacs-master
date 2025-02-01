@@ -174,7 +174,7 @@
              (url "https://git.savannah.gnu.org/git/emacs.git")
              (commit "6f7e916a6c80df11bf169587913fb0443f6b5490")))
        (sha256
-        (base32 "1izl71hbnmfrib8nk076zxzzdsfv7dqb83p1k1as07hl3my7lgcg"))
+        (base32 "1dfh688p1a1njxwa7w9q7jmwxz1fnnxxbciim16dhnlyvbnb9b4d"))
        (patches (origin-patches (package-source emacs-master-minimal)))))))
 
 ;; PGTK
