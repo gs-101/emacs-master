@@ -1,9 +1,9 @@
 name: Build Emacs
 
 on:
-  workflow_run:
-    workflows: [Update Emacs]
-    types: [completed]
+  push:
+    branches:
+      - 'scratch'
 
 jobs:
   build-emacs:
@@ -32,4 +32,4 @@ jobs:
                      "3049 BF6C 0829 94E4 38ED  4A15 3033 E0E9 F7E2 5FE4"))))
                  %default-channels)
     - name: Build Emacs
-      run: guix build emacs-master --fallback
+      run: guix build emacs-master --fallback --substitute-urls="https://ci.guix.gnu.org https://hydra-guix-129.guix.gnu.org"
