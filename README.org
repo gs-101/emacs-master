@@ -181,9 +181,9 @@ In case you didn't know how, you can generate a GPG key with:
 
 1. When choosing a key type, you can pick a signing only one if you want. We have no need for encryption here. I always choose RSA.
 2. For the keysize, same thing, you choose. I always go for 4096 because there's no issue in doing this.
-3. Make it not expore if you wnat, though, that can be insecure.
+3. Make it not expire if you want, though, that can be insecure.
 4. Use either your real name or your GitHub username.
-5. THis should be the e-mail address you use for GitHub.
+5. This should be the e-mail address you use for GitHub.
 6. Add a descriptive comment here, you'll start to make a lot of these once you get used to them. Mine is "GitHub Actions Key".
 7. Make a password.
 8. There is no other step, that was it!
