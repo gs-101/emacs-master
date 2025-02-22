@@ -51,7 +51,7 @@
         (base32 emacs-master-hash))
        (patches
         (search-patches "emacs-disable-jit-compilation.patch"
-                        "emacs-next-exec-path.patch"
+                        "emacs-master-exec-path.patch"
                         "emacs-fix-scheme-indent-function.patch"
                         "emacs-next-native-comp-driver-options.patch"
                         "emacs-master-native-comp-fix-filenames.patch"
