@@ -50,7 +50,7 @@
        (sha256
         (base32 emacs-master-hash))
        (patches
-        (search-patches "emacs-disable-jit-compilation.patch"
+        (search-patches "emacs-master-disable-jit-compilation.patch"
                         "emacs-master-exec-path.patch"
                         "emacs-fix-scheme-indent-function.patch"
                         "emacs-next-native-comp-driver-options.patch"
