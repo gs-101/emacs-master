@@ -31,9 +31,9 @@
   #:use-module (gnu packages gtk))
 
 ;;; !!! EMACS COMMIT AND HASH BEGIN !!!
-(define emacs-master-commit "a5f8ce9f1eae29f87fe13adb61bd4e15faa628a2")
-(define emacs-master-time "1741532853")
-(define emacs-master-hash "1n5zkad0k27nczhrcqnpnd8ysvdxjb0v1bn0vcda0hjz0iii8ir5")
+(define emacs-master-commit "731af8747cb07aea532d9e9fd246857a88625a44")
+(define emacs-master-time "1741541341")
+(define emacs-master-hash "0qzdkm54iw9fzabk0sas6n4ldkrppn1pxg6k38ww3c3dqdnfcxwa")
 ;;; !!! EMACS COMMIT AND HASH END !!!
 
 (define-public emacs-master-minimal
