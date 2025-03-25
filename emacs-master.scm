@@ -159,9 +159,6 @@
 (define-public emacs-master
   (emacs->emacs-master emacs))
 
-(define-public emacs-master-xwidgets
-  (emacs->emacs-master emacs-xwidgets))
-
 ;; New Garbage Collector branch for testing
 (define-public emacs-master-igc
   (package
@@ -180,8 +177,6 @@
 ;; PGTK
 (define-public emacs-master-pgtk
   (emacs->emacs-master emacs-pgtk))
-(define-public emacs-master-pgtk-xwidgets
-  (emacs->emacs-master emacs-pgtk-xwidgets))
 
 ;; Motif
 (define-public emacs-master-motif

@@ -53,10 +53,6 @@ Since this takes packages from divya-lambda, the following packages are availabl
 
   Some recommend it over PGTK, so try both of them out and use what best suits you.
 
-- =emacs-master-xwidgets= ::
-
-  Primarily used for WebKit.
-
 - =emacs-master-igc= ::
 
   New garbage collection method in development.
