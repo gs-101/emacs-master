@@ -72,7 +72,86 @@
                                   (string-drop (package-name emacs)
                                                (string-length "emacs"))))))
     (version version)
-    (source source)))
+    (source
+     source)
+    (arguments
+     (substitute-keyword-arguments (package-arguments emacs)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'validate-comp-integrity)
+            (replace 'patch-program-file-names
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; Substitute "sh" command.
+                (substitute* '("src/callproc.c" "lisp/term.el"
+                               "lisp/htmlfontify.el"
+                               "lisp/mail/feedmail.el"
+                               "lisp/obsolete/pgg-pgp.el"
+                               "lisp/obsolete/pgg-pgp5.el"
+                               ;; "lisp/obsolete/terminal.el"
+                               "lisp/org/ob-eval.el"
+                               "lisp/textmodes/artist.el"
+                               "lisp/progmodes/sh-script.el"
+                               "lisp/textmodes/artist.el"
+                               "lisp/htmlfontify.el"
+                               "lisp/term.el")
+                  (("\"/bin/sh\"")
+                   (format #f "~s"
+                           (search-input-file inputs "bin/sh"))))
+                (substitute* '("lisp/gnus/mm-uu.el" "lisp/gnus/nnrss.el"
+                               "lisp/mail/blessmail.el")
+                  (("\"#!/bin/sh\\\n\"")
+                   (format #f "\"#!~a~%\""
+                           (search-input-file inputs "bin/sh"))))
+                (substitute* '("lisp/jka-compr.el" "lisp/man.el")
+                  (("\"sh\"")
+                   (format #f "~s"
+                           (search-input-file inputs "bin/sh"))))
+
+                ;; Substitute "awk" command.
+                (substitute* '("lisp/gnus/nnspool.el" "lisp/org/ob-awk.el"
+                               "lisp/man.el")
+                  (("\"awk\"")
+                   (format #f "~s"
+                           (search-input-file inputs "bin/awk"))))
+
+                ;; Substitute "find" command.
+                (substitute* '("lisp/gnus/gnus-search.el"
+                               "lisp/obsolete/nnir.el"
+                               "lisp/progmodes/executable.el"
+                               "lisp/progmodes/grep.el"
+                               "lisp/filecache.el"
+                               "lisp/ldefs-boot.el"
+                               "lisp/mpc.el")
+                  (("\"find\"")
+                   (format #f "~s"
+                           (search-input-file inputs "bin/find"))))
+
+                ;; Substitute "sed" command.
+                (substitute* "lisp/org/ob-sed.el"
+                  (("org-babel-sed-command \"sed\"")
+                   (format #f "org-babel-sed-command ~s"
+                           (search-input-file inputs "bin/sed"))))
+                (substitute* "lisp/man.el"
+                  (("Man-sed-command \"sed\"")
+                   (format #f "Man-sed-command ~s"
+                           (search-input-file inputs "bin/sed"))))
+
+                (substitute* "lisp/doc-view.el"
+                  (("\"(gs|dvipdf|ps2pdf|pdftotext)\"" all what)
+                   (let ((replacement (false-if-exception (search-input-file
+                                                           inputs
+                                                           (string-append
+                                                            "/bin/" what)))))
+                     (if replacement
+                         (string-append "\"" replacement "\"") all))))
+                ;; match ".gvfs-fuse-daemon-real" and ".gvfsd-fuse-real"
+                ;; respectively when looking for GVFS processes.
+                (substitute* "lisp/net/tramp-gvfs.el"
+                  (("\\(tramp-compat-process-running-p \"(.*)\"\\)" all
+                    process)
+                   (format #f "(or ~a (tramp-compat-process-running-p ~s))"
+                           all
+                           (string-append "." process "-real"))))))))))))
 
 (define-public emacs-master-no-x-toolkit
   (emacs->emacs-master emacs-no-x-toolkit))
