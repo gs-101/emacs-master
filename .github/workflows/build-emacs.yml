@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Install Guix
-      uses: PromyLOPh/guix-install-action@v1.5
+      uses: PromyLOPh/guix-install-action@28ffda077fe9b9f0c94d79ac2c7ea9aad8d6cf46
       with:
         channels: |-
           (cons* (channel

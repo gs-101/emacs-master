@@ -103,7 +103,7 @@ This should've been clear to me from the start, but, to have Actions actually wo
 
 #+begin_src yaml
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 #+end_src
 
 This makesthe runner clone your repository.
