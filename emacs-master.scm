@@ -72,8 +72,7 @@
                                   (string-drop (package-name emacs-next)
                                                (string-length "emacs-next"))))))
     (version version)
-    (source source)
-    (arguments arguments)))
+    (source source)))
 
 (define-public emacs-master-no-x-toolkit
   (emacs->emacs-master emacs-no-x-toolkit))
