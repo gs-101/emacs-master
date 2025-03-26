@@ -58,11 +58,11 @@
                         "emacs-native-comp-pin-packages.patch"
                         "emacs-pgtk-super-key-fix.patch"))))))
 
-(define* (emacs->emacs-master emacs
-                              #:optional name
-                              #:key (version (package-version
-                                              emacs-master-minimal))
-                              (source (package-source emacs-master-minimal)))
+(define* (emacs-next->emacs-master emacs-next
+                                   #:optional name
+                                   #:key (version (package-version
+                                                   emacs-master-minimal))
+                                   (source (package-source emacs-master-minimal)))
   (package
     (inherit emacs-next)
     (name (or name
@@ -74,40 +74,19 @@
     (version version)
     (source source)))
 
-(define-public emacs-master-no-x-toolkit
-  (emacs->emacs-master emacs-no-x-toolkit))
-
-(define-public emacs-master
-  (emacs->emacs-master emacs))
-
-(define-public emacs-master-xwidgets
-  (emacs->emacs-master emacs-xwidgets))
-
-;; New Garbage Collector branch for testing
+(define-public emacs-master (emacs-next->emacs-master emacs-next))
+(define-public emacs-master-pgtk (emacs-next->emacs-master emacs-next-pgtk))
+(define-public emacs-master-motif (emacs-next->emacs-master emacs-motif))
+(define-public emacs-master-lucid (emacs-next->emacs-master emacs-lucid))
 (define-public emacs-master-igc
-  (package
-    (inherit emacs-master)
-    (name "emacs-master-igc")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://git.savannah.gnu.org/git/emacs.git")
-             (commit "6f7e916a6c80df11bf169587913fb0443f6b5490")))
-       (sha256
-        (base32 "1dfh688p1a1njxwa7w9q7jmwxz1fnnxxbciim16dhnlyvbnb9b4d"))
-       (patches (origin-patches (package-source emacs-master-minimal)))))))
-
-;; PGTK
-(define-public emacs-master-pgtk
-  (emacs->emacs-master emacs-pgtk))
-(define-public emacs-master-pgtk-xwidgets
-  (emacs->emacs-master emacs-pgtk-xwidgets))
-
-;; Motif
-(define-public emacs-master-motif
-  (emacs->emacs-master emacs-motif))
-
-;; Lucid
-(define-public emacs-master-lucid
-  (emacs->emacs-master emacs-lucid))
+  (emacs-next->emacs-master emacs-next
+                            #:source
+                            (source
+                             (origin
+                               (method git-fetch)
+                               (uri (git-reference
+                                     (url "https://git.savannah.gnu.org/git/emacs.git")
+                                     (commit "6f7e916a6c80df11bf169587913fb0443f6b5490")))
+                               (sha256
+                                (base32 "1dfh688p1a1njxwa7w9q7jmwxz1fnnxxbciim16dhnlyvbnb9b4d"))
+                               (patches (origin-patches (package-source emacs-master-minimal)))))))
