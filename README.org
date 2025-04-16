@@ -106,17 +106,16 @@ This should've been clear to me from the start, but, to have Actions actually wo
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 #+end_src
 
-This makesthe runner clone your repository.
+This makes the runner clone your repository.
 
-**** Dependencies
+**** Guix
 
-These dependencies are primarily used by the scripts. Guix is used to get the hash of the Emacs commit, in the [[./bin/get_hash.sh][get_hash]] script. Since we're not installing anything, no extra setup for Guix is required.
+Guix is installed just to get the hash.
 
 #+begin_src yaml
-      - name: Install Dependencies
+      - name: Install Guix
         run: |
-          sudo apt-get update
-          sudo apt-get install -y curl grep guix git gpg guile-3.0 guile-library
+          sudo apt-get install -y guix
 #+end_src
 
 **** Get Curent Commit
@@ -129,20 +128,23 @@ This is going to be needed later. It cuts the exact space where the commit hash 
           echo "current-commit=$(grep "(define emacs-master-commit" emacs-master.scm | awk '{print $3}' | cut -c 2-41)" >> $GITHUB_ENV
 #+end_src
 
-**** Update Emacs
+**** Get Values
 
-This runs the scripts from guix-channel-emacs-master for getting the latest commit. [[./bin/update-emacs][update-emacs]] gets the commit and time, and we rely on [[./bin/get_hash.sh][get_hash]] for, well, getting the hash.
+This gets some information to define the package.
 
 #+begin_src yaml
-  - name: Update Emacs
-    run: |
-      chmod +x bin/get_hash.sh
-      chmod +x bin/update-emacs
-      bin/update-emacs
-      echo "new-commit=$(grep "(define emacs-master-commit" emacs-master.scm | awk '{print $3}' | cut -c 2-41)" >> $GITHUB_ENV
+      - name: Get Values
+        run: |
+          echo "commit=$(curl -s https://api.github.com/repos/emacs-mirror/emacs/commits/master | jq -r '.sha')" >> $GITHUB_ENV
+          git clone https://github.com/emacs-mirror/emacs.git
+          echo "hash="$(guix hash -x --serializer=nar emacs)"" >> $GITHUB_ENV
 #+end_src
 
-We also create another variable, ~new-commit~, to be usd in the next step: Compare Commits.
+=jq= seems to be a default package in Ubuntu, so no need to install it. It is used to get the first instance of ~sha~, which is actually the latest commit in the repo. This also comes from copr-lutris-git[fn:4].
+
+The longest part of this is the =git clone=. It just takes too long to clone Emacs, but I don't think it can be optimized. I tried to make the it shallow, but that unfortunately generates a different hash.
+
+~commit~ is used in the next step to check if the package should actually be updated.
 
 **** Compare Commits
 
@@ -152,7 +154,7 @@ Despite what the echoed messages say, this doesn't make the workflow exit direct
       - name: Compare Commits
         id: compare-commits
         run: |
-          if [ "${{ env.new-commit }}" != "${{ env.current-commit }}" ]; then
+          if [ "${{ env.commit }}" != "${{ env.current-commit }}" ]; then
             echo "The commits are different. Continue the workflow."
             echo "different-commit='true'" >> $GITHUB_OUTPUT
           else
