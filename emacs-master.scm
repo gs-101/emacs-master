@@ -45,10 +45,11 @@
                             (string-drop-right emacs-master-commit 33)))
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://git.savannah.gnu.org/cgit/emacs.git/snapshot/emacs-"
-             emacs-master-commit ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emacs-mirror/emacs.git")
+             (commit emacs-master-commit)))
+       (file-name (git-file-name name version))
        (sha256
         (base32 emacs-master-hash))
        (patches
