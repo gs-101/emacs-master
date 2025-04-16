@@ -12,7 +12,7 @@ This channel features automation through GitHub Actions. That means bugs are to 
 If you want a safer experience but still close to source, check out the built-in [[https://packages.guix.gnu.org/packages/emacs-next/][emacs-next]] packages, or the ones available at the [[https://codeberg.org/divyaranjan/divya-lambda][divya-lambda]] channel.
 #+end_quote
 
-Guix channel featuring automated builds that run every two hours, updating the packages to the latest [[https://git.savannah.gnu.org/cgit/emacs.git][Savannah]] commit.
+Guix channel featuring automated builds that run every two hours, updating the packages to the latest [[https://github.com/emacs-mirror][GitHub mirror]] commit.
 
 This channel is sort of a fork of divya-lambda[fn:1], which features a non-automated build of =emacs-master=, taken from guix-channel-emacs-master[fn:2].
 
@@ -74,7 +74,7 @@ At first, it ran every hour:
       - cron: "0 * * * *"
 #+end_src
 
-But then I changed it to every two hours because I thought I was overloading savannah:
+But then I changed it to every two hours because I thought I was overloading Savannah (when this used to rely on Savannah):
 
 #+begin_src yaml
   on:
