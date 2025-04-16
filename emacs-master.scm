@@ -39,7 +39,10 @@
   (package
     (inherit emacs-next-minimal)
     (name "emacs-master-minimal")
-    (version (git-version "31.0.50" emacs-master-time emacs-master-commit))
+    (version (string-append "31.0.50"
+                            "-"
+                            ;; Done to get the shorthand of the commit.
+                            (string-drop-right emacs-master-commit 33)))
     (source
      (origin
        (method url-fetch)
