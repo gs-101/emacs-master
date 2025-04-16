@@ -52,14 +52,13 @@
        (file-name (git-file-name name version))
        (sha256
         (base32 emacs-master-hash))
-       (patches
-        (search-patches "emacs-master-disable-jit-compilation.patch"
-                        "emacs-master-exec-path.patch"
-                        "emacs-fix-scheme-indent-function.patch"
-                        "emacs-next-native-comp-driver-options.patch"
-                        "emacs-master-native-comp-fix-filenames.patch"
-                        "emacs-native-comp-pin-packages.patch"
-                        "emacs-pgtk-super-key-fix.patch"))))))
+       (patches (search-patches "emacs-master-disable-jit-compilation.patch"
+                                "emacs-master-exec-path.patch"
+                                "emacs-fix-scheme-indent-function.patch"
+                                "emacs-next-native-comp-driver-options.patch"
+                                "emacs-master-native-comp-fix-filenames.patch"
+                                "emacs-native-comp-pin-packages.patch"
+                                "emacs-pgtk-super-key-fix.patch"))))))
 
 (define* (emacs->emacs-master emacs
                               #:optional name
