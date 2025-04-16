@@ -35,7 +35,7 @@
 (define emacs-master-hash "0clcq9nc25nn5f5ag1x15v6bdqwf92q3v8pgq9pycbxs3p4k0ijb")
 ;;; !!! EMACS COMMIT AND HASH END !!!
 
-(define-public emacs-master-minimal
+(define emacs-master-minimal
   (package
     (inherit emacs-next-minimal)
     (name "emacs-master-minimal")
