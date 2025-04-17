@@ -1,5 +1,10 @@
 name: Build Emacs
 
+on:
+  workflow_run:
+    workflows: [Update Emacs]
+    types: [completed]
+
 jobs:
   build-emacs:
     runs-on: ubuntu-latest
