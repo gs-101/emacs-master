@@ -39,13 +39,6 @@
      (tab-width   .  8)
      (sentence-end-double-space . t)
 
-     ;; For use with 'bug-reference-prog-mode'.  Extra bug-reference
-     ;; configuration should be done in your Emacs user configuration file;
-     ;; refer to (info (guix) The Perfect Setup).
-     (bug-reference-bug-regexp
-      . "\\(<https?://\\bugs\\.gnu\\.org/\\([0-9]+\\)>\\)")
-     (bug-reference-url-format . "https://issues.guix.gnu.org/%s")
-
      (eval . (add-to-list 'completion-ignored-extensions ".go"))
 
      ;; Emacs-Guix
@@ -53,39 +46,11 @@
                          (locate-dominating-file default-directory
                                                  ".dir-locals.el")))
 
-     ;; TempEl
-     (eval . (with-eval-after-load
-                 'tempel
-               (if (stringp tempel-path)
-                   (setq tempel-path (list tempel-path)))
-               (let ((guix-tempel-snippets
-                      (concat
-                       (expand-file-name
-                        "etc/snippets/tempel"
-                        (locate-dominating-file default-directory
-                                                ".dir-locals.el"))
-                       "/*.eld")))
-                 (unless (member guix-tempel-snippets tempel-path)
-                   (add-to-list 'tempel-path guix-tempel-snippets)))))
-
-     ;; YASnippet
-     (eval . (with-eval-after-load
-                 'yasnippet
-               (let ((guix-yasnippets
-                      (expand-file-name
-                       "etc/snippets/yas"
-                       (locate-dominating-file default-directory
-                                               ".dir-locals.el"))))
-                 (unless (member guix-yasnippets yas-snippet-dirs)
-                   (add-to-list 'yas-snippet-dirs guix-yasnippets)
-                   (yas-reload-all)))))
-
      ;; Geiser
      ;; This allows automatically setting the `geiser-guile-load-path'
      ;; variable when using various Guix checkouts (e.g., via git worktrees).
      (geiser-repl-per-project-p . t)))
 
- (c-mode          . ((c-file-style . "gnu")))
  (scheme-mode
   .
   ((indent-tabs-mode . nil)
@@ -230,6 +195,4 @@
                    t))
              (setq-local fill-paragraph-function #'emacs27-lisp-fill-paragraph)))))
 
- (emacs-lisp-mode . ((indent-tabs-mode . nil)))
- (texinfo-mode    . ((indent-tabs-mode . nil)
-                     (fill-column . 72))))
+ (emacs-lisp-mode . ((indent-tabs-mode . nil))))
