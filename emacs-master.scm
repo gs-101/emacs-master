@@ -1,8 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright (C) 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
-;;; Copyright (C) 2024 Divya R. Pattanaik <divya@subvertising.org>
-;;; Copyright (C) 2023-2024 Akib Azmain Turja <akib@disroot.org>
-
+;;; Copyright © 2023-2024 Akib Azmain Turja <akib@disroot.org>
+;;; Copyright © 2024 Divya R. Pattanaik <divya@subvertising.org>
+;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
+;;;
 ;;; This file is not part of GNU Guix.
 ;;;
 ;;; This file is free software; you can redistribute it and/or modify it
