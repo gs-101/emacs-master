@@ -16,7 +16,9 @@
 ;;; Copyright © 2024 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
-;;; This file is part of GNU Guix.
+;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
+;;;
+;;; This file is not part of GNU Guix.
 ;;;
 ;;; GNU Guix is free software; you can redistribute it and/or modify it
 ;;; under the terms of the GNU General Public License as published by
