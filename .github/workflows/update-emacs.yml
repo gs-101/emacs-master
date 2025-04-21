@@ -13,31 +13,35 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-    - name: Install Guix
-      run: |
-        sudo apt-get install -y guix
     - name: Get Current Commit
       run: |
         echo "current-commit=$(grep "(define emacs-master-commit" emacs-master.scm | awk '{print $3}' | cut -c 2-41)" >> $GITHUB_ENV
-    - name: Get Values
+    - name: Get Source Commit
       run: |
-        echo "commit=$(curl -s https://api.github.com/repos/emacs-mirror/emacs/commits/master | jq -r '.sha')" >> $GITHUB_ENV
-        git clone https://github.com/emacs-mirror/emacs.git
-        echo "hash="$(guix hash -x --serializer=nar emacs)"" >> $GITHUB_ENV
+        echo "source-commit=$(curl -s https://api.github.com/repos/emacs-mirror/emacs/commits/master | jq -r '.sha')" >> $GITHUB_ENV
     - name: Compare Commits
       id: compare-commits
       run: |
-        if [ "${{ env.commit }}" != "${{ env.current-commit }}" ]; then
+        if [ "${{env.source-commit }}" != "${{ env.current-commit }}" ]; then
           echo "The commits are different. Continue the workflow."
           echo "different-commit='true'" >> $GITHUB_OUTPUT
         else
           echo "The commits are the same. Exiting the workflow..."
           echo "different-commit='false'" >> $GITHUB_OUTPUT
         fi
+    - name: Install Guix
+      if: ${{ contains(steps.compare-commits.Outputs.different-commit, 'true') }}
+      run: |
+        sudo apt-get install -y guix
+    - name: Get Hash
+      if: ${{ contains(steps.compare-commits.Outputs.different-commit, 'true') }}
+      run: |
+        git clone https://github.com/emacs-mirror/emacs.git
+        echo "hash="$(guix hash -x --serializer=nar emacs)"" >> $GITHUB_ENV
     - name: Set Values
       if: ${{ contains(steps.compare-commits.Outputs.different-commit, 'true') }}
       run: |
-        sed -i "s/-commit \"\(.*\)\"/-commit \"${{ env.commit }}\"/" emacs-master.scm
+        sed -i "s/-commit \"\(.*\)\"/-commit \"${{ env.source-commit }}\"/" emacs-master.scm
         sed -i "s/-hash \"\(.*\)\"/-hash \"${{ env.hash }}\"/" emacs-master.scm
     - name: Import GPG Key
       if: ${{ contains(steps.compare-commits.Outputs.different-commit, 'true') }}
