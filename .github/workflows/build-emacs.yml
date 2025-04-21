@@ -10,7 +10,24 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
+    - name: Get Current Commit
+      run: |
+        echo "current-commit=$(grep "(define emacs-master-commit" emacs-master.scm | awk '{print $3}' | cut -c 2-41)" >> $GITHUB_ENV
+    - name: Get Source Commit
+      run: |
+        echo "source-commit=$(curl -s https://api.github.com/repos/emacs-mirror/emacs/commits/master | jq -r '.sha')" >> $GITHUB_ENV
+    - name: Compare Commits
+      id: compare-commits
+      run: |
+        if [ "${{env.source-commit }}" != "${{ env.current-commit }}" ]; then
+          echo "The commits are different. Continue the workflow."
+          echo "different-commit='true'" >> $GITHUB_OUTPUT
+        else
+          echo "The commits are the same. Exiting the workflow..."
+          echo "different-commit='false'" >> $GITHUB_OUTPUT
+        fi
     - name: Install Guix
+      if: ${{ contains(steps.compare-commits.Outputs.different-commit, 'true') }}
       uses: PromyLOPh/guix-install-action@40615e98e5c16a451aec10fe01c214ed07cbaa77
       with:
         channels: |-
@@ -25,4 +42,5 @@ jobs:
                      "3049 BF6C 0829 94E4 38ED  4A15 3033 E0E9 F7E2 5FE4"))))
                  %default-channels)
     - name: Build Emacs
+      if: ${{ contains(steps.compare-commits.Outputs.different-commit, 'true') }}
       run: guix build emacs-master --fallback
