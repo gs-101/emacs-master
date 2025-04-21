@@ -20,7 +20,7 @@ Commit updates are made with a [[./.github/workflows/emacs-master.yml][GitHub Ac
 
 * Channel Definition
 
-Use this for adding this channel to your configuration:
+Use this for adding the channel to your configuration:
 
 #+begin_src scheme
   (cons* (channel
@@ -41,7 +41,7 @@ Since this takes packages from divya-lambda, the following packages are availabl
 
 - =emacs-master= ::
 
-  Regular package.
+  Regular Emacs package.
 
 - =emacs-master-pgtk= ::
 
@@ -85,7 +85,7 @@ But then I changed it to every two hours because I thought I was overloading Sav
 
 ** The Job
 
-To allow GitHub Actions to commit to repository, you need to give the job write permissions:
+To allow GitHub Actions to commit to the repository, you need to give the job write permissions:
 
 #+begin_src yaml
   jobs:
@@ -108,19 +108,9 @@ This should've been clear to me from the start, but, to have Actions actually wo
 
 This makes the runner clone your repository.
 
-**** Guix
+**** Get Current Commit
 
-Guix is installed just to get the hash.
-
-#+begin_src yaml
-      - name: Install Guix
-        run: |
-          sudo apt-get install -y guix
-#+end_src
-
-**** Get Curent Commit
-
-This is going to be needed later. It cuts the exact space where the commit hash is found, storing it in a enviroment variable, so it can be used by the other steps.
+This is going to be needed later. It cuts the exact space where the commit hash is found, storing it in a environment variable, so it can be used by the other steps.
 
 #+begin_src yaml
       - name: Get Current Commit
@@ -128,23 +118,16 @@ This is going to be needed later. It cuts the exact space where the commit hash 
           echo "current-commit=$(grep "(define emacs-master-commit" emacs-master.scm | awk '{print $3}' | cut -c 2-41)" >> $GITHUB_ENV
 #+end_src
 
-**** Get Values
+**** Get Source Commit
 
-This gets some information to define the package.
+This is also going to be needed later, but it will have more use than ~current_commit~, as it will be used to actually update the packages.
 
 #+begin_src yaml
-      - name: Get Values
-        run: |
-          echo "commit=$(curl -s https://api.github.com/repos/emacs-mirror/emacs/commits/master | jq -r '.sha')" >> $GITHUB_ENV
-          git clone https://github.com/emacs-mirror/emacs.git
-          echo "hash="$(guix hash -x --serializer=nar emacs)"" >> $GITHUB_ENV
+      - name: Get Source Commit
+        run: echo "source_commit=$(curl -s https://api.github.com/repos/emacs-mirror/emacs/commits/master | jq -r '.sha')" >> $GITHUB_ENV
 #+end_src
 
 =jq= seems to be a default package in Ubuntu, so no need to install it. It is used to get the first instance of ~sha~, which is actually the latest commit in the repo. This also comes from copr-lutris-git[fn:4].
-
-The longest part of this is the =git clone=. It just takes too long to clone Emacs, but I don't think it can be optimized. I tried to make the it shallow, but that unfortunately generates a different hash.
-
-~commit~ is used in the next step to check if the package should actually be updated.
 
 **** Compare Commits
 
@@ -154,14 +137,50 @@ Despite what the echoed messages say, this doesn't make the workflow exit direct
       - name: Compare Commits
         id: compare-commits
         run: |
-          if [ "${{ env.commit }}" != "${{ env.current-commit }}" ]; then
+          if [ "${{ env.source_commit }}" != "${{ env.current_commit }}" ]; then
             echo "The commits are different. Continue the workflow."
-            echo "different-commit='true'" >> $GITHUB_OUTPUT
+            echo "different_commit='true'" >> $GITHUB_OUTPUT
           else
             echo "The commits are the same. Exiting the workflow..."
-            echo "different-commit='false'" >> $GITHUB_OUTPUT
+            echo "different_commit='false'" >> $GITHUB_OUTPUT
           fi
 #+end_src
+
+**** Guix
+
+Guix is installed just to get the hash.
+
+#+begin_src yaml
+      - name: Install Guix
+        if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
+        run: sudo apt-get install -y guix
+#+end_src
+
+It is installed from =apt= as there's no need to get it directly from source just to get a hash.
+
+**** Get Hash
+
+#+begin_src yaml
+      - name: Get Hash
+        if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
+        run: |
+          git clone https://github.com/emacs-mirror/emacs.git
+          echo "hash="$(guix hash -x --serializer=nar emacs)"" >> $GITHUB_ENV
+#+end_src
+
+The longest step, because of the =git clone=. It just takes too long to clone Emacs, but I don't think it can be optimized. I tried to make it a shallow clone, but that unfortunately generates a different hash.
+
+**** Set Values
+
+#+begin_src yaml
+      - name: Set Values
+        if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
+        run: |
+          sed -i "s/-commit \"\(.*\)\"/-commit \"${{ env.source_commit }}\"/" emacs-master.scm
+          sed -i "s/-hash \"\(.*\)\"/-hash \"${{ env.hash }}\"/" emacs-master.scm
+#+end_src
+
+With some nice =sed= incantations the values are replaced in the file. The =.*= is probably an exageration, I think I could use =[a-z0-9]+=.
 
 **** GPG Key
 
@@ -232,13 +251,13 @@ This just makes the runner import your base64 encoded key:
 
 #+begin_src yaml
       - name: Import GPG Key
-        if: ${{ contains(steps.compare-commits.Outputs.different-commit, 'true') }}
+        if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
         run: echo "$GPG_KEY" | base64 --decode | gpg --batch --import
         env:
           GPG_KEY: ${{ secrets.GPG_KEY }}
 #+end_src
 
-The ~if~ statement comes from our previous comparison step. This and the next steps only run if ~different-commit~ is ~true~.
+The ~if~ statement comes from our previous comparison step. This and the next steps only run if ~different_commit~ is ~true~.
 
 ***** Custom GPG Signing Program
 
@@ -246,7 +265,7 @@ Used in the next step for Git. Makes it so that the runner always inputs the pas
 
 #+begin_src yaml
       - name: Custom GPG Signing Program
-        if: ${{ contains(steps.compare-commits.Outputs.different-commit, 'true') }}
+        if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
         run: |
           echo "#!/bin/bash" >> /tmp/gpg.sh
           echo "gpg --batch --pinentry-mode=loopback --passphrase \$GPG_KEY_PASSPHRASE \"\$@\"" >> /tmp/gpg.sh
@@ -261,7 +280,7 @@ Nothing out of the ordinary. This just makes Git use our key.
 
 #+begin_src yaml
       - name: Setup Git
-        if: ${{ contains(steps.compare-commits.Outputs.different-commit, 'true') }}
+        if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
         run: |
           git config commit.gpgsign true
           git config user.signingkey $GPG_KEY_ID
@@ -274,7 +293,7 @@ Nothing out of the ordinary. This just makes Git use our key.
 
 #+begin_src yaml
       - name: Commit
-        if: ${{ contains(steps.compare-commits.Outputs.different-commit, 'true') }}
+        if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
         run: |
           git add emacs-master.scm
           short_commit=$(grep "(define emacs-master-commit" emacs-master.scm | awk '{print $3}' | cut -c 2-8)
