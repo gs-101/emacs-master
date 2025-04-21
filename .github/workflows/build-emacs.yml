@@ -8,6 +8,7 @@ on:
 jobs:
   build-emacs:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
     - name: Install Guix
       uses: PromyLOPh/guix-install-action@40615e98e5c16a451aec10fe01c214ed07cbaa77
