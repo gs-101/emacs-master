@@ -30,8 +30,8 @@
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages gtk))
 
-(define emacs-master-commit "45e849bddc1c7777628d3f42557ddbd8a6ba96b7")
-(define emacs-master-hash "0hsnrv9fhzsygpij1sq3h492q64sfk2dswkmlvvllskcpz0jrajv")
+(define emacs-master-commit "6f30b9584f7feec395e4b6806ec2eda542639e98")
+(define emacs-master-hash "1vzi97j9jjvi1mrdms40cix0n6yqzzcwb633i5mir6h3c2dd4fd4")
 (define emacs-master-shorthand-commit
   (string-drop-right emacs-master-commit 33))
 
