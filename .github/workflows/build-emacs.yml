@@ -31,7 +31,7 @@ jobs:
         fi
     - name: Install Guix
       if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
-      uses: PromyLOPh/guix-install-action@40615e98e5c16a451aec10fe01c214ed07cbaa77
+      uses: gs-101/guix-install-action@0daecea5bda09e7a5034a74419003f110deae22a
       with:
         channels: |-
           (cons* (channel
