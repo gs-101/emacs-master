@@ -186,7 +186,7 @@ With some nice =sed= incantations the values are replaced in the file. The =.*= 
 
 This is where we use those instructions from “Sign git commits with GPG in GitHub Actions”. This is the workflow's key, not yours.
 
-We'll setup some *repository* secrets. See how /repository/ is in bold? That indicates another mistake I made during this. I thought that GitHub Actions used /enviroment/ secrets, so I wasted some time on this.
+We'll set up some *repository* secrets. See how /repository/ is in bold? That indicates another mistake I made during this. I thought that GitHub Actions used /enviroment/ secrets, so I wasted some time on this.
 
 [[./images/gpg_secrets.png]]
 
@@ -274,12 +274,12 @@ Used in the next step for Git. Makes it so that the runner always inputs the pas
           GPG_KEY_PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
 #+end_src
 
-***** Setup Git
+***** Set Git
 
 Nothing out of the ordinary. This just makes Git use our key.
 
 #+begin_src yaml
-      - name: Setup Git
+      - name: Set up Git
         if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
         run: |
           git config commit.gpgsign true

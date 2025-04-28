@@ -53,7 +53,7 @@ jobs:
         chmod +x /tmp/gpg.sh
       env:
         GPG_KEY_PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}
-    - name: Setup Git
+    - name: Set up Git
       if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
       run: |
         git config commit.gpgsign true
