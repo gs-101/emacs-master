@@ -10,6 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
+    - name: Cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/guix
+        key: guix-cache-${{ github.sha }}
+        restore-keys: |
+          guix-cache-
     - name: Install Guix
       uses: gs-101/guix-install-action@0daecea5bda09e7a5034a74419003f110deae22a
       with:
