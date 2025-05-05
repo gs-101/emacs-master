@@ -11,7 +11,7 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
     - name: Cache
-      uses: actions/cache@v3
+      uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
       with:
         path: ~/.cache/guix
         key: guix-cache-${{ github.sha }}
