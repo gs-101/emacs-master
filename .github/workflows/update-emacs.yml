@@ -20,7 +20,10 @@ jobs:
     - name: Compare Commits
       id: compare-commits
       run: |
-        if [ "${{env.source_commit }}" != "${{ env.current_commit }}" ]; then
+        if [ "${{env.source_commit }}" == "null" ]; then
+          echo "Couldn't get commit from source. Failing..."
+          exit 1
+        elif [ "${{env.source_commit }}" != "${{ env.current_commit }}" ]; then
           echo "The commits are different. Continue the workflow."
           echo "different_commit='true'" >> $GITHUB_OUTPUT
         else
