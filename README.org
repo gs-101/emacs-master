@@ -131,19 +131,22 @@ This is also going to be needed later, but it will have more use than ~current_c
 
 **** Compare Commits
 
-Despite what the echoed messages say, this doesn't make the workflow exit directly. It's a simple comparison for defining a boolean variable to be used by the other steps.
+Despite what the echoed messages say, this doesn't make the workflow exit directly. It's a simple comparison for defining a boolean variable to be used by the other steps. The exception to this is the fist check, because the commit being "null" indicates a failure happened when trying to get the commit.
 
 #+begin_src yaml
-      - name: Compare Commits
-        id: compare-commits
-        run: |
-          if [ "${{ env.source_commit }}" != "${{ env.current_commit }}" ]; then
-            echo "The commits are different. Continue the workflow."
-            echo "different_commit='true'" >> $GITHUB_OUTPUT
-          else
-            echo "The commits are the same. Exiting the workflow..."
-            echo "different_commit='false'" >> $GITHUB_OUTPUT
-          fi
+  - name: Compare Commits
+    id: compare-commits
+    run: |
+      if [ "${{env.source_commit }}" == "null" ]; then
+        echo "Couldn't get commit from source. Failing..."
+        exit 1
+      elif [ "${{env.source_commit }}" != "${{ env.current_commit }}" ]; then
+        echo "The commits are different. Continue the workflow."
+        echo "different_commit='true'" >> $GITHUB_OUTPUT
+      else
+        echo "The commits are the same. Exiting the workflow..."
+        echo "different_commit='false'" >> $GITHUB_OUTPUT
+      fi
 #+end_src
 
 **** Guix
