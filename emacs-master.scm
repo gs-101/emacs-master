@@ -170,11 +170,24 @@
        (method git-fetch)
        (uri (git-reference
              (url "https://git.savannah.gnu.org/git/emacs.git")
-             (commit "6f7e916a6c80df11bf169587913fb0443f6b5490")))
+             (commit "2ef5b055f50d61fea59b54f87dbfd548e7a8b53d")))
        (sha256
-        (base32 "1dfh688p1a1njxwa7w9q7jmwxz1fnnxxbciim16dhnlyvbnb9b4d"))
-       (patches (origin-patches (package-source emacs-master-minimal)))))))
-
+        (base32 "105k75r76myq2wkdfn6lx8sw40lvrrn4qxdg6k7db6n7wdc8bqlk"))
+       (patches (search-patches "emacs-master-igc-disable-jit-compilation.patch"
+                                "emacs-master-exec-path.patch"
+                                "emacs-fix-scheme-indent-function.patch"
+                                "emacs-next-native-comp-driver-options.patch"
+                                "emacs-master-native-comp-fix-filenames.patch"
+                                "emacs-native-comp-pin-packages.patch"
+                                "emacs-pgtk-super-key-fix.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments emacs-master)
+       ((#:configure-flags flags #~'())
+        #~(append #$flags
+                  '("--with-mps=yes")))))
+    (inputs
+     (modify-inputs (package-inputs emacs-master)
+       (prepend (@@ (mps) mps))))))
 ;; PGTK
 (define-public emacs-master-pgtk
   (emacs->emacs-master emacs-pgtk))
