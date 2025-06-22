@@ -35,6 +35,11 @@
 (define emacs-master-shorthand-commit
   (string-drop-right emacs-master-commit 33))
 
+(define patches-path "patches/")
+
+(define (from-patches patch)
+  (string-append patches-path patch))
+
 (define emacs-master-minimal
   (package
     (inherit emacs-next-minimal)
@@ -51,13 +56,13 @@
        (file-name (git-file-name name version))
        (sha256
         (base32 emacs-master-hash))
-       (patches (search-patches "emacs-master-disable-tramp-test48.patch"
-                                "emacs-master-exec-path.patch"
-                                "emacs-master-native-comp-fix-filenames.patch"
-                                "emacs-next-disable-jit-compilation.patch"
-                                "emacs-fix-scheme-indent-function.patch"
+       (patches (search-patches "emacs-fix-scheme-indent-function.patch"
                                 "emacs-native-comp-pin-packages.patch"
-                                "emacs-pgtk-super-key-fix.patch"))))))
+                                "emacs-pgtk-super-key-fix.patch"
+                                "emacs-next-disable-jit-compilation.patch"
+                                "emacs-next-exec-path.patch"
+                                "emacs-next-native-comp-fix-filenames.patch"
+                                (from-patches "emacs-master-disable-tramp-test49.patch")))))))
 
 (define* (emacs->emacs-master emacs
                               #:optional name
@@ -173,13 +178,13 @@
              (commit "2ef5b055f50d61fea59b54f87dbfd548e7a8b53d")))
        (sha256
         (base32 "105k75r76myq2wkdfn6lx8sw40lvrrn4qxdg6k7db6n7wdc8bqlk"))
-       (patches (search-patches "emacs-master-igc-disable-jit-compilation.patch"
-                                "emacs-master-exec-path.patch"
-                                "emacs-fix-scheme-indent-function.patch"
-                                "emacs-next-native-comp-driver-options.patch"
-                                "emacs-master-native-comp-fix-filenames.patch"
+       (patches (search-patches "emacs-fix-scheme-indent-function.patch"
                                 "emacs-native-comp-pin-packages.patch"
-                                "emacs-pgtk-super-key-fix.patch"))))
+                                "emacs-pgtk-super-key-fix.patch"
+                                "emacs-next-disable-jit-compilation.patch"
+                                "emacs-next-exec-path.patch"
+                                "emacs-next-native-comp-fix-filenames.patch"
+                                (from-patches "emacs-master-disable-tramp-test49.patch")))))
     (arguments
      (substitute-keyword-arguments (package-arguments emacs-master)
        ((#:configure-flags flags #~'())
