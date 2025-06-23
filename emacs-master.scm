@@ -183,8 +183,7 @@
                                 "emacs-pgtk-super-key-fix.patch"
                                 "emacs-next-disable-jit-compilation.patch"
                                 "emacs-next-exec-path.patch"
-                                "emacs-next-native-comp-fix-filenames.patch"
-                                (from-patches "emacs-master-disable-tramp-test49.patch")))))
+                                "emacs-next-native-comp-fix-filenames.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments emacs-master)
        ((#:configure-flags flags #~'())
