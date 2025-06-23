@@ -175,7 +175,7 @@
        (method git-fetch)
        (uri (git-reference
              (url "https://git.savannah.gnu.org/git/emacs.git")
-             (commit "2ef5b055f50d61fea59b54f87dbfd548e7a8b53d")))
+             (commit "f1737342518baf6968ad0c09132565cad5f4a645")))
        (sha256
         (base32 "105k75r76myq2wkdfn6lx8sw40lvrrn4qxdg6k7db6n7wdc8bqlk"))
        (patches (search-patches "emacs-fix-scheme-indent-function.patch"
