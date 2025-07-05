@@ -176,11 +176,11 @@ The longest step, because of the =git clone=. It just takes too long to clone Em
 **** Set Values
 
 #+begin_src yaml
-      - name: Set Values
-        if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
-        run: |
-          sed -i "s/-commit \"\(.*\)\"/-commit \"${{ env.source_commit }}\"/" emacs-master.scm
-          sed -i "s/-hash \"\(.*\)\"/-hash \"${{ env.hash }}\"/" emacs-master.scm
+  - name: Set Values
+    if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
+    run: |
+      sed -i "s/define emacs-master-commit \"\(.*\)\"/define emacs-master-commit \"${{ env.source_commit }}\"/" emacs-master.scm
+      sed -i "s/define emacs-master-hash \"\(.*\)\"/define emacs-master-hash \"${{ env.hash }}\"/" emacs-master.scm
 #+end_src
 
 With some nice =sed= incantations the values are replaced in the file. The =.*= is probably an exageration, I think I could use =[a-z0-9]+=.

@@ -41,8 +41,8 @@ jobs:
     - name: Set Values
       if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
       run: |
-        sed -i "s/-commit \"\(.*\)\"/-commit \"${{ env.source_commit }}\"/" emacs-master.scm
-        sed -i "s/-hash \"\(.*\)\"/-hash \"${{ env.hash }}\"/" emacs-master.scm
+        sed -i "s/define emacs-master-commit \"\(.*\)\"/define emacs-master-commit \"${{ env.source_commit }}\"/" emacs-master.scm
+        sed -i "s/define emacs-master-hash \"\(.*\)\"/define emacs-master-hash \"${{ env.hash }}\"/" emacs-master.scm
     - name: Import GPG Key
       if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
       run: echo "$GPG_KEY" | base64 --decode | gpg --batch --import
