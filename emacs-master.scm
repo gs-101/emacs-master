@@ -117,7 +117,7 @@
                               ;; Source and version come from
                               emacs-master-minimal to keep the package updated.
                               (source (package-source emacs-master-minimal))
-                              (version (package-source emacs-master-minimal))
+                              (version (package-version emacs-master-minimal))
                               ;; But the arguments and inputs come from the
                               ;; originals to better fit their quirks.
                               (arguments
