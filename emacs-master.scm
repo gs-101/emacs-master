@@ -134,11 +134,23 @@
     (arguments arguments)
     (inputs inputs)))
 
-(define-public emacs-master-no-x-toolkit
-  (emacs->emacs-master emacs-no-x-toolkit))
-
 (define-public emacs-master
   (emacs->emacs-master emacs))
+
+;; No graphical elements.
+(define-public emacs-master-no-x-toolkit (emacs->emacs-master emacs-no-x-toolkit))
+
+;; PGTK
+(define-public emacs-master-pgtk
+  (emacs->emacs-master emacs-pgtk))
+
+;; Motif
+(define-public emacs-master-motif
+  (emacs->emacs-master emacs-motif))
+
+;; Lucid
+(define-public emacs-master-lucid
+  (emacs->emacs-master emacs-lucid))
 
 ;; New Garbage Collector branch for testing
 (define-public emacs-master-igc
@@ -149,8 +161,8 @@
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://git.savannah.gnu.org/git/emacs.git")
-             (commit "f1737342518baf6968ad0c09132565cad5f4a645")))
+              (url "https://git.savannah.gnu.org/git/emacs.git")
+              (commit "f1737342518baf6968ad0c09132565cad5f4a645")))
        (sha256
         (base32 "105k75r76myq2wkdfn6lx8sw40lvrrn4qxdg6k7db6n7wdc8bqlk"))
        (patches (search-patches "emacs-fix-scheme-indent-function.patch"
@@ -167,14 +179,3 @@
     (inputs
      (modify-inputs (package-inputs emacs-master)
        (prepend (@@ (mps) mps))))))
-;; PGTK
-(define-public emacs-master-pgtk
-  (emacs->emacs-master emacs-pgtk))
-
-;; Motif
-(define-public emacs-master-motif
-  (emacs->emacs-master emacs-motif))
-
-;; Lucid
-(define-public emacs-master-lucid
-  (emacs->emacs-master emacs-lucid))
