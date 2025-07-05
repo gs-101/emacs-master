@@ -42,6 +42,27 @@
 (define (from-patches patch)
   (string-append patches-path patch))
 
+;; From emacs.scm.
+(define* (emacs-ert-selector excluded-tests #:key run-nativecomp run-expensive run-unstable)
+  "Create an ERT selector that excludes tests."
+  (string-append
+   "(not (or "
+   (if run-nativecomp
+       ""
+       "(tag :nativecomp) ")
+   (if run-expensive
+       ""
+       "(tag :expensive-test) ")
+   (if run-unstable
+       ""
+       "(tag :unstable) ")
+   (string-join
+    (map
+     (lambda (test)
+       (string-append "\\\"" test "\\\""))
+     excluded-tests))
+   "))"))
+
 (define emacs-master-minimal
   (package
     (inherit emacs-next-minimal)
