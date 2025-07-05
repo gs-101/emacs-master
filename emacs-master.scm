@@ -63,6 +63,26 @@
      excluded-tests))
    "))"))
 
+(define emacs-master-selector
+  (emacs-ert-selector
+   '("bytecomp--fun-value-as-head"
+     "esh-util-test/path/get-remote"
+     "esh-var-test/path-var/preserve-across-hosts"
+     "ffap-tests--c-path"
+     "find-func-tests--locate-macro-generated-symbols"
+     "grep-tests--rgrep-abbreviate-properties-darwin"
+     "grep-tests--rgrep-abbreviate-properties-gnu-linux"
+     "grep-tests--rgrep-abbreviate-properties-windows-nt-dos-semantics"
+     "grep-tests--rgrep-abbreviate-properties-windows-nt-sh-semantics"
+     "info-xref-test-makeinfo"
+     "man-tests-find-header-file"
+     "tab-bar-tests-quit-restore-window"
+     "tramp-test48-remote-load-path"
+     "tramp-test49-remote-load-path"
+     ;; For emacs-master-igc.
+     "module--test-assertions--call-emacs-from-gc"
+     "process-tests/fd-setsize-no-crash/make-process")))
+
 (define emacs-master-minimal
   (package
     (inherit emacs-next-minimal)
@@ -83,7 +103,11 @@
                                 "emacs-next-disable-jit-compilation.patch"
                                 "emacs-next-exec-path.patch"
                                 "emacs-next-native-comp-fix-filenames.patch"
-                                (from-patches "emacs-master-disable-tramp-test49.patch")))))))
+                                (from-patches "emacs-master-disable-tramp-test49.patch")))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments emacs-next-minimal)
+       ((#:make-flags flags #~'())
+        #~(list (string-append "SELECTOR=" #$emacs-master-selector)))))))
 
 (define* (emacs->emacs-master emacs
                               #:optional name
