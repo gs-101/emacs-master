@@ -134,10 +134,10 @@
     (arguments arguments)
     (inputs inputs)))
 
-(define-public emacs-master
-  (emacs->emacs-master emacs))
+(define-public emacs-master (emacs->emacs-master emacs))
 
 ;; No graphical elements.
+(define-public emacs-master-no-x (emacs->emacs-master emacs-no-x))
 (define-public emacs-master-no-x-toolkit (emacs->emacs-master emacs-no-x-toolkit))
 
 ;; PGTK
