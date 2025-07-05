@@ -178,3 +178,10 @@
    #:inputs
    (modify-inputs (package-inputs emacs)
      (append (@@ (mps) mps)))))
+(define-public emacs-master-pgtk-igc
+  (package/inherit emacs-master-igc.
+    (name "emacs-master-pgtk-igc")
+    (arguments
+     (substitute-keyword-arguments (package-arguments emacs-master-igc)
+       ((#:configure-flags flags #~'())
+        #~(cons* "--with-pgtk" #$flags))))))
