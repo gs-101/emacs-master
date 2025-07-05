@@ -101,6 +101,15 @@
        ((#:make-flags flags #~'())
         #~(list (string-append "SELECTOR=" #$emacs-master-selector)))))))
 
+(define (masterize-name emacs)
+  (when (eq? (package-name emacs) "emacs-next")
+    (string-append "emacs-master"
+                   (string-drop (package-name emacs)
+                                (string-length "emacs-next"))))
+  (string-append "emacs-master"
+                 (string-drop (package-name emacs)
+                              (string-length "emacs"))))
+
 (define* (emacs->emacs-master emacs
                               #:optional name
                               #:key (version (package-version
@@ -108,12 +117,7 @@
                               (source (package-source emacs-master-minimal)))
   (package
     (inherit emacs)
-    (name (or name
-              (and (string-prefix? "emacs"
-                                   (package-name emacs))
-                   (string-append "emacs-master"
-                                  (string-drop (package-name emacs)
-                                               (string-length "emacs"))))))
+    (name (or name (masterize-name emacs)))
     (version version)
     (source
      source)
