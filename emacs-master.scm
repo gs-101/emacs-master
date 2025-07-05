@@ -30,6 +30,7 @@
   #:use-module (guix download))
 
 (define emacs-master-commit "d1677d0a926c148ef4fce65251311fc8dc796464")
+(define emacs-master-igc-commit "f1737342518baf6968ad0c09132565cad5f4a645")
 
 ;; Returns the first seven characters of a commit.
 (define (shorthand-commit commit)
@@ -152,30 +153,28 @@
 (define-public emacs-master-lucid
   (emacs->emacs-master emacs-lucid))
 
-;; New Garbage Collector branch for testing
+;; New Garbage Collector branch for testing.
 (define-public emacs-master-igc
-  (package
-    (inherit emacs-master)
-    (name "emacs-master-igc")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://git.savannah.gnu.org/git/emacs.git")
-              (commit "f1737342518baf6968ad0c09132565cad5f4a645")))
-       (sha256
-        (base32 "105k75r76myq2wkdfn6lx8sw40lvrrn4qxdg6k7db6n7wdc8bqlk"))
-       (patches (search-patches "emacs-fix-scheme-indent-function.patch"
-                                "emacs-native-comp-pin-packages.patch"
-                                "emacs-pgtk-super-key-fix.patch"
-                                "emacs-next-disable-jit-compilation.patch"
-                                "emacs-next-exec-path.patch"
-                                "emacs-next-native-comp-fix-filenames.patch"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments emacs-master)
-       ((#:configure-flags flags #~'())
-        #~(append #$flags
-                  '("--with-mps=yes")))))
-    (inputs
-     (modify-inputs (package-inputs emacs-master)
-       (prepend (@@ (mps) mps))))))
+  (emacs->emacs-master
+   emacs
+   ;; Necessary, or else the package would have the wrong name.
+   "emacs-master-igc"
+   #:source ; The branch isn't available in emacsmirror.
+   (origin
+     (inherit (package-source emacs-next-minimal))
+     (uri (git-reference
+            (url "https://git.savannah.gnu.org/git/emacs.git")
+            (commit emacs-master-igc-commit)))
+     (sha256
+      (base32 "07r9cbpd8nhb0ihknc8978prcvszy2dj8xyq3d2wqrafk0jzljm4")))
+   #:version ; Different commit, different version.
+   (git-version "31.0.50" "1" (shorthand-commit emacs-master-igc-commit))
+   #:arguments
+   (substitute-keyword-arguments (package-arguments emacs)
+     ((#:configure-flags #~'())
+      #~(cons* "--with-mps=yes" #$flags))
+     ((#:make-flags flags #~'())
+      #~(list (string-append "SELECTOR=" #$emacs-master-selector))))
+   #:inputs
+   (modify-inputs (package-inputs emacs)
+     (append (@@ (mps) mps)))))
