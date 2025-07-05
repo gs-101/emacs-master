@@ -90,20 +90,12 @@
     (version (string-append "31.0.50" "1" (shorthand-commit emacs-master-commit)))
     (source
      (origin
-       (method git-fetch)
+       (inherit (package-source emacs-next-minimal))
        (uri (git-reference
               (url "https://github.com/emacs-mirror/emacs.git")
               (commit emacs-master-commit)))
-       (file-name (git-file-name name version))
        (sha256
-        (base32 emacs-master-hash))
-       (patches (search-patches "emacs-fix-scheme-indent-function.patch"
-                                "emacs-native-comp-pin-packages.patch"
-                                "emacs-pgtk-super-key-fix.patch"
-                                "emacs-next-disable-jit-compilation.patch"
-                                "emacs-next-exec-path.patch"
-                                "emacs-next-native-comp-fix-filenames.patch"
-                                (from-patches "emacs-master-disable-tramp-test49.patch")))))
+        (base32 emacs-master-hash))))
     (arguments
      (substitute-keyword-arguments (package-arguments emacs-next-minimal)
        ((#:make-flags flags #~'())
