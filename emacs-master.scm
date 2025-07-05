@@ -84,7 +84,7 @@
      "module--test-assertions--call-emacs-from-gc"
      "process-tests/fd-setsize-no-crash/make-process")))
 
-(define emacs-master-minimal
+(define-public emacs-master-minimal
   (package
     (inherit emacs-next-minimal)
     (name "emacs-master-minimal")
