@@ -19,16 +19,15 @@
 ;;; along with this file.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (emacs-master)
+  #:use-module (gnu packages)
+  #:use-module (gnu packages emacs)
+  #:use-module (gnu packages gtk)
+  #:use-module (gnu packages xorg)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
-  #:use-module (guix download)
-
-  #:use-module (gnu packages)
-  #:use-module (gnu packages xorg)
-  #:use-module (gnu packages emacs)
-  #:use-module (gnu packages gtk))
+  #:use-module (guix download))
 
 (define emacs-master-commit "d1677d0a926c148ef4fce65251311fc8dc796464")
 (define emacs-master-hash "1a3l1wkdn2wh6x07qhpc48mhqjpcl6qhfgrc590w226wd8rpsh6q")
@@ -51,8 +50,8 @@
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/emacs-mirror/emacs.git")
-             (commit emacs-master-commit)))
+              (url "https://github.com/emacs-mirror/emacs.git")
+              (commit emacs-master-commit)))
        (file-name (git-file-name name version))
        (sha256
         (base32 emacs-master-hash))
