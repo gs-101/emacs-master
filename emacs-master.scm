@@ -30,9 +30,12 @@
   #:use-module (guix download))
 
 (define emacs-master-commit "d1677d0a926c148ef4fce65251311fc8dc796464")
+
+;; Returns the first seven characters of a commit.
+(define (shorthand-commit commit)
+  (string-drop-right commit 33))
+
 (define emacs-master-hash "1a3l1wkdn2wh6x07qhpc48mhqjpcl6qhfgrc590w226wd8rpsh6q")
-(define emacs-master-shorthand-commit
-  (string-drop-right emacs-master-commit 33))
 
 (define patches-path "patches/")
 
@@ -43,9 +46,7 @@
   (package
     (inherit emacs-next-minimal)
     (name "emacs-master-minimal")
-    (version (string-append "31.0.50"
-                            "-"
-                            emacs-master-shorthand-commit))
+    (version (string-append "31.0.50" "1" (shorthand-commit emacs-master-commit)))
     (source
      (origin
        (method git-fetch)
