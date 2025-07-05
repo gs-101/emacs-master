@@ -115,7 +115,7 @@
                               #:optional name
                               #:key
                               ;; Source and version come from
-                              emacs-master-minimal to keep the package updated.
+                              ;; emacs-master-minimal to keep the package updated.
                               (source (package-source emacs-master-minimal))
                               (version (package-version emacs-master-minimal))
                               ;; But the arguments and inputs come from the
@@ -124,7 +124,7 @@
                                ;; But only in part. We need to use the text
                                ;; excluder from here!
                                (substitute-keyword-arguments (package-arguments emacs)
-                                 ((:make-flags flags #~'())
+                                 ((#:make-flags flags #~'())
                                   #~(list (string-append "SELECTOR=" #$emacs-master-selector)))))
                               (inputs (package-inputs emacs)))
   (package
@@ -166,7 +166,15 @@
             (url "https://git.savannah.gnu.org/git/emacs.git")
             (commit emacs-master-igc-commit)))
      (sha256
-      (base32 "07r9cbpd8nhb0ihknc8978prcvszy2dj8xyq3d2wqrafk0jzljm4")))
+      (base32 "07r9cbpd8nhb0ihknc8978prcvszy2dj8xyq3d2wqrafk0jzljm4"))
+     ;; Patches are cherry-picked because this branch takes some time to
+     ;; catch-up with master.
+     (patches (search-patches "emacs-fix-scheme-indent-function.patch"
+                              "emacs-native-comp-pin-packages.patch"
+                              "emacs-pgtk-super-key-fix.patch"
+                              "emacs-next-disable-jit-compilation.patch"
+                              "emacs-next-exec-path.patch"
+                              "emacs-next-native-comp-fix-filenames.patch")))
    #:version ; Different commit, different version.
    (git-version "31.0.50" "1" (shorthand-commit emacs-master-igc-commit))
    #:arguments
@@ -179,7 +187,7 @@
    (modify-inputs (package-inputs emacs)
      (append (@@ (mps) mps)))))
 (define-public emacs-master-pgtk-igc
-  (package/inherit emacs-master-igc.
+  (package/inherit emacs-master-igc
     (name "emacs-master-pgtk-igc")
     (arguments
      (substitute-keyword-arguments (package-arguments emacs-master-igc)
