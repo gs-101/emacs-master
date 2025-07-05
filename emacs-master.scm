@@ -82,7 +82,8 @@
      "tramp-test49-remote-load-path"
      ;; For emacs-master-igc.
      "module--test-assertions--call-emacs-from-gc"
-     "process-tests/fd-setsize-no-crash/make-process")))
+     "process-tests/fd-setsize-no-crash/make-process"
+     "set-commit-limit-test")))
 
 (define-public emacs-master-minimal
   (package
