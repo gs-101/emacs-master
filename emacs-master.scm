@@ -180,7 +180,7 @@
    (git-version "31.0.50" "1" (shorthand-commit emacs-master-igc-commit))
    #:arguments
    (substitute-keyword-arguments (package-arguments emacs)
-     ((#:configure-flags #~'())
+     ((#:configure-flags flags #~'())
       #~(cons* "--with-mps=yes" #$flags))
      ((#:make-flags flags #~'())
       #~(list (string-append "SELECTOR=" #$emacs-master-selector))))
