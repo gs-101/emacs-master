@@ -33,11 +33,22 @@ jobs:
     - name: Install Guix
       if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
       run: sudo apt-get install -y guix
+    - name: Cache Emacs
+      id: cache-emacs
+      if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
+      uses: actions/cache@640a1c2554105b57832a23eea0b4672fc7a790d5
+      with:
+        path: emacs
+        key: ${{ runner.os }}-emacs
+    - name: Clone Emacs
+      if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') && steps.cache-emacs.outputs.cache-hit != 'true' }}
+      run: git clone https://github.com/emacs-mirror/emacs.git
+    - name: Update Emacs
+      if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') && steps.cache-emacs.outputs.cache-hit == 'true' }}
+      run: cd emacs && git pull
     - name: Get Hash
       if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
-      run: |
-        git clone https://github.com/emacs-mirror/emacs.git
-        echo "hash="$(guix hash -x --serializer=nar emacs)"" >> $GITHUB_ENV
+      run: echo "hash="$(guix hash -x --serializer=nar emacs)"" >> $GITHUB_ENV
     - name: Set Values
       if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
       run: |
