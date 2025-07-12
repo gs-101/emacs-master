@@ -57,6 +57,10 @@ Since this takes packages from divya-lambda, the following packages are availabl
 
   New garbage collection method in development.
 
+- =emacs-master-pgtk-igc= ::
+
+  IGC + GTK.
+
 * Workflow
 
 In case I stop maintaining this and someone else becomes interested, this section details how the workflow works.
