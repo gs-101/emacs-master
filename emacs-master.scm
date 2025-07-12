@@ -30,13 +30,14 @@
   #:use-module (guix download))
 
 (define emacs-master-commit "c6c64d6da3ea48887c95ef978095ca643480cc15")
-(define emacs-master-igc-commit "f1737342518baf6968ad0c09132565cad5f4a645")
+(define emacs-master-igc-commit "51dd41aeeefe9e7d20348d17108bbaa106579f83")
 
 ;; Returns the first seven characters of a commit.
 (define (shorthand-commit commit)
   (string-drop-right commit 33))
 
 (define emacs-master-hash "00gi32b11ybww31i0sh9dx8qlh4l8xyrqwjabgilk6r7irliwns2")
+(define emacs-master-igc-hash "03mgmdh917xkx10p2py87ayikxg4hlj6knv5yp71nrrhwnw1fsz9")
 
 (define patches-path "patches/")
 
@@ -167,7 +168,7 @@
             (url "https://git.savannah.gnu.org/git/emacs.git")
             (commit emacs-master-igc-commit)))
      (sha256
-      (base32 "07r9cbpd8nhb0ihknc8978prcvszy2dj8xyq3d2wqrafk0jzljm4"))
+      (base32 emacs-master-igc-hash))
      ;; Patches are cherry-picked because this branch takes some time to
      ;; catch-up with master.
      (patches (search-patches "emacs-fix-scheme-indent-function.patch"
