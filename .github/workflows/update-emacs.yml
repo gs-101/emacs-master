@@ -33,11 +33,22 @@ jobs:
     - name: Install Guix
       if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
       run: sudo apt-get install -y guix
+    - name: Cache Emacs
+      id: cache-emacs
+      if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
+      uses: actions/cache@640a1c2554105b57832a23eea0b4672fc7a790d5
+      with:
+        path: emacs
+        key: ${{ runner.os }}-emacs
+    - name: Clone Emacs
+      if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') && steps.cache-emacs.outputs.cache-hit != 'true' }}
+      run: git clone https://github.com/emacs-mirror/emacs.git
+    - name: Update Emacs
+      if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') && steps.cache-emacs.outputs.cache-hit == 'true' }}
+      run: cd emacs && git pull
     - name: Get Hash
       if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
-      run: |
-        git clone https://github.com/emacs-mirror/emacs.git
-        echo "hash="$(guix hash -x --serializer=nar emacs)"" >> $GITHUB_ENV
+      run: echo "hash="$(guix hash -x --serializer=nar emacs)"" >> $GITHUB_ENV
     - name: Set Values
       if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
       run: |
@@ -70,7 +81,7 @@ jobs:
         git add emacs-master.scm
         short_commit=$(grep "(define emacs-master-commit" emacs-master.scm | awk '{print $3}' | cut -c 2-8)
         git commit -m "feat (emacs-master.scm): Update Emacs to $short_commit" --gpg-sign=$GPG_KEY_ID
-        git push --set-upstream origin main
+        git push --set-upstream origin scratch
       env:
        GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
        GPG_KEY_PASSPHRASE: ${{ secrets.GPG_KEY_PASSPHRASE }}

@@ -165,17 +165,49 @@ Guix is installed just to get the hash.
 
 It is installed from =apt= as there's no need to get it directly from source just to get a hash.
 
+**** Cache Emacs
+
+#+begin_src yaml
+      - name: Cache Emacs
+        id: cache-emacs
+        if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
+        uses: actions/cache@640a1c2554105b57832a23eea0b4672fc7a790d5
+        with:
+          path: emacs
+          key: ${{ runner.os }}-emacs
+#+end_src
+
+Since Emacs is pretty slow to clone, I decided to just have it cached.
+
+**** Clone Emacs
+
+#+begin_src yaml
+      - name: Clone Emacs
+        if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') && steps.cache-emacs.outputs.cache-hit != 'true' }}
+        run: git clone https://github.com/emacs-mirror/emacs.git
+#+end_src
+
+Runs if Emacs can't be restored from the cache. Pretty slow.
+
+**** Update Emacs
+
+#+begin_src yaml
+      - name: Update Emacs
+        if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') && steps.cache-emacs.outputs.cache-hit == 'true' }}
+        run: cd emacs && git pull
+#+end_src
+
+If Emacs was successfully restored from the cache, we take a quicker route, by just updating it with a pull.
+
 **** Get Hash
 
 #+begin_src yaml
       - name: Get Hash
         if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
-        run: |
-          git clone https://github.com/emacs-mirror/emacs.git
-          echo "hash="$(guix hash -x --serializer=nar emacs)"" >> $GITHUB_ENV
+        run: echo "hash="$(guix hash -x --serializer=nar emacs)"" >> $GITHUB_ENV
 #+end_src
 
-The longest step, because of the =git clone=. It just takes too long to clone Emacs, but I don't think it can be optimized. I tried to make it a shallow clone, but that unfortunately generates a different hash.
+Uses Guix to, well, get the hash of the repository at that commit.
 
 **** Set Values
 
