@@ -89,7 +89,7 @@
   (package
     (inherit emacs-next-minimal)
     (name "emacs-master-minimal")
-    (version (string-append "31.0.50" "1" (shorthand-commit emacs-master-commit)))
+    (version (git-version "31.0.50" "1" (shorthand-commit emacs-master-commit)))
     (source
      (origin
        (inherit (package-source emacs-next-minimal))
