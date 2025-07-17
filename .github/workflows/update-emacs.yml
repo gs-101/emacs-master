@@ -32,7 +32,9 @@ jobs:
         fi
     - name: Install Guix
       if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
-      run: sudo apt-get install -y guix
+      run: |
+        sudo apt update -y
+        sudo apt install guix -y
     - name: Cache Emacs
       id: cache-emacs
       if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
