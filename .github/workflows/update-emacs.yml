@@ -15,26 +15,6 @@ jobs:
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
     - name: Get Current Commit
       run: echo "current_commit=$(grep "(define emacs-master-commit" emacs-master.scm | awk '{print $3}' | cut -c 2-41)" >> $GITHUB_ENV
-    - name: Get Source Commit
-      run: echo "source_commit=$(curl -s https://api.github.com/repos/emacs-mirror/emacs/commits/master | jq -r '.sha')" >> $GITHUB_ENV
-    - name: Compare Commits
-      id: compare-commits
-      run: |
-        if [ "${{env.source_commit }}" == "null" ]; then
-          echo "Couldn't get commit from source. Failing..."
-          exit 1
-        elif [ "${{env.source_commit }}" != "${{ env.current_commit }}" ]; then
-          echo "The commits are different. Continue the workflow."
-          echo "different_commit='true'" >> $GITHUB_OUTPUT
-        else
-          echo "The commits are the same. Exiting the workflow..."
-          echo "different_commit='false'" >> $GITHUB_OUTPUT
-        fi
-    - name: Install Guix
-      if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
-      run: |
-        sudo apt update -y
-        sudo apt install guix -y
     - name: Cache Emacs
       id: cache-emacs
       if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
@@ -48,6 +28,23 @@ jobs:
     - name: Update Emacs
       if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') && steps.cache-emacs.outputs.cache-hit == 'true' }}
       run: cd emacs && git pull
+    - name: Get Source Commit
+      run: echo "source_commit=$(cd emacs && git rev-parse --verify HEAD)" >> $GITHUB_ENV
+    - name: Compare Commits
+      id: compare-commits
+      run: |
+        if [ "${{env.source_commit }}" != "${{ env.current_commit }}" ]; then
+          echo "The commits are different. Continue the workflow."
+          echo "different_commit='true'" >> $GITHUB_OUTPUT
+        else
+          echo "The commits are the same. Exiting the workflow..."
+          echo "different_commit='false'" >> $GITHUB_OUTPUT
+        fi
+    - name: Install Guix
+      if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
+      run: |
+        sudo apt update -y
+        sudo apt install guix -y
     - name: Get Hash
       if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
       run: echo "hash="$(guix hash -x --serializer=nar emacs)"" >> $GITHUB_ENV
