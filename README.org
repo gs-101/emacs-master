@@ -122,49 +122,6 @@ This is going to be needed later. It cuts the exact space where the commit hash 
           echo "current-commit=$(grep "(define emacs-master-commit" emacs-master.scm | awk '{print $3}' | cut -c 2-41)" >> $GITHUB_ENV
 #+end_src
 
-**** Get Source Commit
-
-This is also going to be needed later, but it will have more use than ~current_commit~, as it will be used to actually update the packages.
-
-#+begin_src yaml
-      - name: Get Source Commit
-        run: echo "source_commit=$(curl -s https://api.github.com/repos/emacs-mirror/emacs/commits/master | jq -r '.sha')" >> $GITHUB_ENV
-#+end_src
-
-=jq= seems to be a default package in Ubuntu, so no need to install it. It is used to get the first instance of ~sha~, which is actually the latest commit in the repo. This also comes from copr-lutris-git[fn:4].
-
-**** Compare Commits
-
-Despite what the echoed messages say, this doesn't make the workflow exit directly. It's a simple comparison for defining a boolean variable to be used by the other steps. The exception to this is the fist check, because the commit being "null" indicates a failure happened when trying to get the commit.
-
-#+begin_src yaml
-  - name: Compare Commits
-    id: compare-commits
-    run: |
-      if [ "${{env.source_commit }}" == "null" ]; then
-        echo "Couldn't get commit from source. Failing..."
-        exit 1
-      elif [ "${{env.source_commit }}" != "${{ env.current_commit }}" ]; then
-        echo "The commits are different. Continue the workflow."
-        echo "different_commit='true'" >> $GITHUB_OUTPUT
-      else
-        echo "The commits are the same. Exiting the workflow..."
-        echo "different_commit='false'" >> $GITHUB_OUTPUT
-      fi
-#+end_src
-
-**** Guix
-
-Guix is installed just to get the hash.
-
-#+begin_src yaml
-      - name: Install Guix
-        if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
-        run: sudo apt-get install -y guix
-#+end_src
-
-It is installed from =apt= as there's no need to get it directly from source just to get a hash.
-
 **** Cache Emacs
 
 #+begin_src yaml
@@ -198,6 +155,47 @@ Runs if Emacs can't be restored from the cache. Pretty slow.
 #+end_src
 
 If Emacs was successfully restored from the cache, we take a quicker route, by just updating it with a pull.
+
+
+**** Get Source Commit
+
+This is also going to be needed later, but it will have more use than ~current_commit~, as it will be used to actually update the packages.
+
+#+begin_src yaml
+  - name: Get Source Commit
+    run: echo "source_commit=$(cd emacs && git rev-parse --verify HEAD)" >> $GITHUB_ENV
+#+end_src
+
+Taking advantage of the Emacs checkout we have cached, we use =git= again. This time, to get the latest commit reported by it from the pull.
+
+**** Compare Commits
+
+Despite what the echoed messages say, this doesn't make the workflow exit directly. It's a simple comparison for defining a boolean variable to be used by the other steps.
+
+#+begin_src yaml
+  - name: Compare Commits
+    id: compare-commits
+    run: |
+      if [ "${{env.source_commit }}" != "${{ env.current_commit }}" ]; then
+        echo "The commits are different. Continue the workflow."
+        echo "different_commit='true'" >> $GITHUB_OUTPUT
+      else
+        echo "The commits are the same. Exiting the workflow..."
+        echo "different_commit='false'" >> $GITHUB_OUTPUT
+      fi
+#+end_src
+
+**** Guix
+
+Guix is installed just to get the hash.
+
+#+begin_src yaml
+      - name: Install Guix
+        if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
+        run: sudo apt-get install -y guix
+#+end_src
+
+It is installed from =apt= as there's no need to get it directly from source just to get a hash.
 
 **** Get Hash
 
