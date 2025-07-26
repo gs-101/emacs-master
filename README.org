@@ -127,7 +127,6 @@ This is going to be needed later. It cuts the exact space where the commit hash 
 #+begin_src yaml
       - name: Cache Emacs
         id: cache-emacs
-        if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') }}
         uses: actions/cache@640a1c2554105b57832a23eea0b4672fc7a790d5
         with:
           path: emacs
@@ -139,9 +138,9 @@ Since Emacs is pretty slow to clone, I decided to just have it cached.
 **** Clone Emacs
 
 #+begin_src yaml
-      - name: Clone Emacs
-        if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') && steps.cache-emacs.outputs.cache-hit != 'true' }}
-        run: git clone https://github.com/emacs-mirror/emacs.git
+  - name: Clone Emacs
+    if: ${{ steps.cache-emacs.outputs.cache-hit != 'true' }}
+    run: git clone https://github.com/emacs-mirror/emacs.git
 #+end_src
 
 Runs if Emacs can't be restored from the cache. Pretty slow.
@@ -149,9 +148,9 @@ Runs if Emacs can't be restored from the cache. Pretty slow.
 **** Update Emacs
 
 #+begin_src yaml
-      - name: Update Emacs
-        if: ${{ contains(steps.compare-commits.Outputs.different_commit, 'true') && steps.cache-emacs.outputs.cache-hit == 'true' }}
-        run: cd emacs && git pull
+  - name: Update Emacs
+    if: ${{ steps.cache-emacs.outputs.cache-hit == 'true' }}
+    run: cd emacs && git pull
 #+end_src
 
 If Emacs was successfully restored from the cache, we take a quicker route, by just updating it with a pull.
