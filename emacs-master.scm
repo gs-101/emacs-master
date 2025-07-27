@@ -161,11 +161,11 @@
    emacs
    ;; Necessary, or else the package would have the wrong name.
    "emacs-master-igc"
-   #:source ; The branch isn't available in emacsmirror.
+   #:source
    (origin
      (inherit (package-source emacs-next-minimal))
      (uri (git-reference
-            (url "https://git.savannah.gnu.org/git/emacs.git")
+            (url "https://github.com/emacs-mirror/emacs.git")
             (commit emacs-master-igc-commit)))
      (sha256
       (base32 emacs-master-igc-hash))
