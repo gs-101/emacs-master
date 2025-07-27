@@ -18,6 +18,7 @@
 ;;; along with this file.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (mps)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages sqlite)
   #:use-module (guix build-system gnu)
   #:use-module (guix git-download)
@@ -33,8 +34,8 @@
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/Ravenbrook/mps")
-             (commit (string-append "release-" version))))
+              (url "https://github.com/Ravenbrook/mps")
+              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
@@ -42,8 +43,16 @@
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f
-                #:parallel-build? #f))
-    (inputs (list sqlite))
+       #:parallel-build? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'remove-werror
+           (lambda _
+             (substitute* "configure.ac"
+               (("-Werror") ""))
+             (substitute* (find-files "code")
+               (("-Werror") "")))))))
+    (inputs (list autoconf automake sqlite))
     (home-page "https://www.ravenbrook.com/project/mps/")
     (synopsis "Memory Pool System")
     (description "The Memory Pool System is a flexible and adaptable
