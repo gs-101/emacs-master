@@ -81,6 +81,7 @@
      "tab-bar-tests-quit-restore-window"
      "tramp-test48-remote-load-path"
      "tramp-test49-remote-load-path"
+     "tramp-test50-remote-load-path"
      ;; For emacs-master-igc.
      "module--test-assertions--call-emacs-from-gc"
      "process-tests/fd-setsize-no-crash/make-process"
