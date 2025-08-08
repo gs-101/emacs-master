@@ -20,8 +20,11 @@
 
 (define-module (emacs-master)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages xorg)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -82,6 +85,12 @@
      "tramp-test48-remote-load-path"
      "tramp-test49-remote-load-path"
      "tramp-test50-remote-load-path"
+     "autoinsert-tests-auto-insert-file"
+     "autoinsert-tests-auto-insert-function"
+     "autoinsert-tests-auto-insert-skeleton"
+     "autoinsert-tests-auto-insert-vector"
+     "autoinsert-tests-define-auto-insert-after"
+     "autoinsert-tests-define-auto-insert-before"
      ;; For emacs-master-igc.
      "module--test-assertions--call-emacs-from-gc"
      "process-tests/fd-setsize-no-crash/make-process"
@@ -103,7 +112,11 @@
     (arguments
      (substitute-keyword-arguments (package-arguments emacs-next-minimal)
        ((#:make-flags flags #~'())
-        #~(list (string-append "SELECTOR=" #$emacs-master-selector)))))))
+        #~(list (string-append "SELECTOR=" #$emacs-master-selector)))))
+    ;; "python-shell--convert-file-name-to-send-1" test requires python3.
+    (native-inputs
+     (modify-inputs (package-inputs emacs-next-minimal)
+       (append autoconf python-3 texinfo)))))
 
 (define (masterize-name emacs)
   (when (eq? (package-name emacs) "emacs-next")
@@ -129,14 +142,19 @@
                                (substitute-keyword-arguments (package-arguments emacs)
                                  ((#:make-flags flags #~'())
                                   #~(list (string-append "SELECTOR=" #$emacs-master-selector)))))
-                              (inputs (package-inputs emacs)))
+                              (inputs (package-inputs emacs))
+                              ;; "python-shell--convert-file-name-to-send-1" test requires python3.
+                              (native-inputs
+                               (modify-inputs (package-inputs emacs-next-minimal)
+                                 (append autoconf python-3 texinfo))))
   (package
     (inherit emacs)
     (name (or name (masterize-name emacs)))
     (version version)
     (source source)
     (arguments arguments)
-    (inputs inputs)))
+    (inputs inputs)
+    (native-inputs native-inputs)))
 
 (define-public emacs-master (emacs->emacs-master emacs))
 
