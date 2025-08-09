@@ -115,8 +115,8 @@
         #~(list (string-append "SELECTOR=" #$emacs-master-selector)))))
     ;; "python-shell--convert-file-name-to-send-1" test requires python3.
     (native-inputs
-     (modify-inputs (package-inputs emacs-next-minimal)
-       (append autoconf python-3 texinfo)))))
+     (modify-inputs (package-native-inputs emacs-next-minimal)
+       (append python-3)))))
 
 (define (masterize-name emacs)
   (when (eq? (package-name emacs) "emacs-next")
@@ -137,16 +137,16 @@
                               ;; But the arguments and inputs come from the
                               ;; originals to better fit their quirks.
                               (arguments
-                               ;; But only in part. We need to use the text
-                               ;; excluder from here!
                                (substitute-keyword-arguments (package-arguments emacs)
+                                 ;; But only in part. We need to use the text
+                                 ;; excluder from here!
                                  ((#:make-flags flags #~'())
                                   #~(list (string-append "SELECTOR=" #$emacs-master-selector)))))
                               (inputs (package-inputs emacs))
                               ;; "python-shell--convert-file-name-to-send-1" test requires python3.
                               (native-inputs
-                               (modify-inputs (package-inputs emacs-next-minimal)
-                                 (append autoconf python-3 texinfo))))
+                               (modify-inputs (package-native-inputs emacs)
+                                 (append python-3))))
   (package
     (inherit emacs)
     (name (or name (masterize-name emacs)))
