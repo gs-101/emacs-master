@@ -85,12 +85,7 @@
      "tramp-test48-remote-load-path"
      "tramp-test49-remote-load-path"
      "tramp-test50-remote-load-path"
-     "autoinsert-tests-auto-insert-file"
-     "autoinsert-tests-auto-insert-function"
-     "autoinsert-tests-auto-insert-skeleton"
-     "autoinsert-tests-auto-insert-vector"
-     "autoinsert-tests-define-auto-insert-after"
-     "autoinsert-tests-define-auto-insert-before"
+     "lua-ts-test-auto-close-block-comments"
      ;; For emacs-master-igc.
      "module--test-assertions--call-emacs-from-gc"
      "process-tests/fd-setsize-no-crash/make-process"
