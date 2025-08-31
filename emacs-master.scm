@@ -32,14 +32,14 @@
   #:use-module (guix git-download)
   #:use-module (guix download))
 
-(define emacs-master-commit "32d3c859f07a684ce1712f3a66d377ca94a829af")
+(define emacs-master-commit "8c663618ce884cccf989d7834f822b7384ee5e83")
 (define emacs-master-igc-commit "92f52805f9e99068ff07148a3a76b1d97e77adbf")
 
 ;; Returns the first seven characters of a commit.
 (define (shorthand-commit commit)
   (string-drop-right commit 33))
 
-(define emacs-master-hash "0cmq2qchif8b2m1pm0l3n7vpxhm5f1hgashwcj623zjwnz1w2cxg")
+(define emacs-master-hash "0jrxk8bblvrnbd7jy6a8h0va2bxh92vacjyxbkazmkc80v69vmiy")
 (define emacs-master-igc-hash "0jbihsyxnqbnvjb6bpdirjf9h3ivx6rzaahicqk5pg9pndy950sl")
 
 (define patches-path "patches/")
