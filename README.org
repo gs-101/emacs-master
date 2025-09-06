@@ -37,6 +37,8 @@ Use this for adding the channel to your configuration:
 
 * Substitutes
 
+#+html: <a href="https://ci.guix.moe/jobset/emacs-master"><img src="https://ci.guix.moe/jobset/emacs-master/badge.svg?type=0"></a>
+
 This channel uses [[https://ci.guix.moe/][Guix Moe CI]], a community build farm for Guix. For information on how to use it, read the [[https://ultrarare.space/en/posts/guix-build-farm/][announcement blog post]].
 
 * Packages
