@@ -99,7 +99,7 @@ Now, it runs weekly because [[https://codeberg.org/hako/Testament/issues/16#issu
   on:
     workflow_dispatch:
     schedule:
-      - cron: "0 * * * 1"
+      - cron: "0 0 * * 1"
 #+end_src
 
 ** The Job
