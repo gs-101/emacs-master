@@ -103,7 +103,11 @@
               (url "https://github.com/emacs-mirror/emacs.git")
               (commit emacs-master-commit)))
        (sha256
-        (base32 emacs-master-hash))))
+        (base32 emacs-master-hash))
+       (snippet
+        '(for-each delete-file-recursively
+                   '("test/lisp/textmodes/ispell-resources"
+                     "test/lisp/textmodes/ispell-tests")))))
     (arguments
      (substitute-keyword-arguments (package-arguments emacs-next-minimal)
        ((#:make-flags flags #~'())
