@@ -21,6 +21,7 @@
 (define-module (emacs-master)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages python)
@@ -111,11 +112,16 @@
     (arguments
      (substitute-keyword-arguments (package-arguments emacs-next-minimal)
        ((#:make-flags flags #~'())
-        #~(list (string-append "SELECTOR=" #$emacs-master-selector)))))
+        #~(list (string-append "SELECTOR=" #$emacs-master-selector)
+                (let ((release-date "2025-08-14 05:04:03"))
+                  (string-append "RUN_TEMACS= "
+                                 #$(this-package-native-input "libfaketime")
+                                 "/bin/faketime -m -f '" release-date "'"
+                                 " ./temacs"))))))
     ;; "python-shell--convert-file-name-to-send-1" test requires python3.
     (native-inputs
      (modify-inputs (package-native-inputs emacs-next-minimal)
-       (append python-3)))))
+       (append libfaketime python-3)))))
 
 (define (masterize-name emacs)
   (when (eq? (package-name emacs) "emacs-next")
@@ -140,12 +146,17 @@
                                  ;; But only in part. We need to use the text
                                  ;; excluder from here!
                                  ((#:make-flags flags #~'())
-                                  #~(list (string-append "SELECTOR=" #$emacs-master-selector)))))
+                                  #~(list (string-append "SELECTOR=" #$emacs-master-selector)
+                                          (let ((release-date "2025-08-14 05:04:03"))
+                                            (string-append "RUN_TEMACS= "
+                                                           #$(this-package-native-input "libfaketime")
+                                                           "/bin/faketime -m -f '" release-date "'"
+                                                           " ./temacs"))))))
                               (inputs (package-inputs emacs))
                               ;; "python-shell--convert-file-name-to-send-1" test requires python3.
                               (native-inputs
                                (modify-inputs (package-native-inputs emacs)
-                                 (append python-3))))
+                                 (append libfaketime python-3))))
   (package
     (inherit emacs)
     (name (or name (masterize-name emacs)))
@@ -202,7 +213,12 @@
      ((#:configure-flags flags #~'())
       #~(cons* "--with-mps=yes" #$flags))
      ((#:make-flags flags #~'())
-      #~(list (string-append "SELECTOR=" #$emacs-master-selector))))
+      #~(list (string-append "SELECTOR=" #$emacs-master-selector)
+              (let ((release-date "2025-08-14 05:04:03"))
+                (string-append "RUN_TEMACS= "
+                               #$(this-package-native-input "libfaketime")
+                               "/bin/faketime -m -f '" release-date "'"
+                               " ./temacs")))))
    #:inputs
    (modify-inputs (package-inputs emacs)
      (append (@@ (mps) mps)))))
