@@ -1,9 +1,7 @@
 name: Build Emacs
 
 on:
-  workflow_run:
-    workflows: [Update Emacs]
-    types: [completed]
+  push
 
 jobs:
   build-emacs:
