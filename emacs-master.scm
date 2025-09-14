@@ -115,13 +115,13 @@
         #~(list (string-append "SELECTOR=" #$emacs-master-selector)
                 (let ((release-date "2025-08-14 05:04:03"))
                   (string-append "RUN_TEMACS= "
-                                 #$(this-package-native-input "libfaketime")
+                                 #$libfaketime
                                  "/bin/faketime -m -f '" release-date "'"
                                  " ./temacs"))))))
     ;; "python-shell--convert-file-name-to-send-1" test requires python3.
     (native-inputs
      (modify-inputs (package-native-inputs emacs-next-minimal)
-       (append libfaketime python-3)))))
+       (append python-3)))))
 
 (define (masterize-name emacs)
   (when (eq? (package-name emacs) "emacs-next")
@@ -149,14 +149,14 @@
                                   #~(list (string-append "SELECTOR=" #$emacs-master-selector)
                                           (let ((release-date "2025-08-14 05:04:03"))
                                             (string-append "RUN_TEMACS= "
-                                                           #$(this-package-native-input "libfaketime")
+                                                           #$libfaketime
                                                            "/bin/faketime -m -f '" release-date "'"
                                                            " ./temacs"))))))
                               (inputs (package-inputs emacs))
                               ;; "python-shell--convert-file-name-to-send-1" test requires python3.
                               (native-inputs
                                (modify-inputs (package-native-inputs emacs)
-                                 (append libfaketime python-3))))
+                                 (append python-3))))
   (package
     (inherit emacs)
     (name (or name (masterize-name emacs)))
@@ -216,7 +216,7 @@
       #~(list (string-append "SELECTOR=" #$emacs-master-selector)
               (let ((release-date "2025-08-14 05:04:03"))
                 (string-append "RUN_TEMACS= "
-                               #$(this-package-native-input "libfaketime")
+                               #$libfaketime
                                "/bin/faketime -m -f '" release-date "'"
                                " ./temacs")))))
    #:inputs
