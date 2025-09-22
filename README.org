@@ -348,7 +348,7 @@ Nothing out of the ordinary. This just makes Git use our key.
         run: |
           git add emacs-master.scm
           short_commit=$(grep "(define emacs-master-commit" emacs-master.scm | awk '{print $3}' | cut -c 2-8)
-          git commit -m "feat (emacs-master.scm): Update Emacs to $short_commit" --gpg-sign=$GPG_KEY_ID
+          git commit -m "feat(emacs-master.scm): update Emacs to $short_commit" --gpg-sign=$GPG_KEY_ID
           git push --set-upstream origin main
         env:
          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
