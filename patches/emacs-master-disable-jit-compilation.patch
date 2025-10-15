@@ -2,7 +2,7 @@ Index: emacs-30.1/src/comp.c
 ===================================================================
 --- emacs-30.1.orig/src/comp.c
 +++ emacs-30.1/src/comp.c
-@@ -5666,8 +5666,12 @@ syms_of_comp (void)
+@@ -5566,8 +5566,12 @@ syms_of_comp (void)
      doc: /* If non-nil, compile loaded .elc files asynchronously.
  
  After compilation, each function definition is updated to use the
