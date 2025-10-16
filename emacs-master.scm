@@ -107,7 +107,6 @@
         (base32 emacs-master-hash))
        (patches (search-patches "emacs-fix-scheme-indent-function.patch"
                                 "emacs-native-comp-driver-options.patch"
-                                "emacs-native-comp-fix-filenames.patch"
                                 "emacs-native-comp-pin-packages.patch"
                                 "emacs-pgtk-super-key-fix.patch"))
        (snippet
