@@ -105,7 +105,10 @@
               (commit emacs-master-commit)))
        (sha256
         (base32 emacs-master-hash))
-       (patches (search-patches "emacs-fix-scheme-indent-function.patch"
+       (patches (search-patches (from-patches "emacs-master-disable-jit-compilation.patch")
+                                (from-patches "emacs-master-exec-path.patch")
+                                (from-patches "emacs-master-native-comp-fix-filenames.patch")
+                                "emacs-fix-scheme-indent-function.patch"
                                 "emacs-native-comp-driver-options.patch"
                                 "emacs-native-comp-pin-packages.patch"
                                 "emacs-pgtk-super-key-fix.patch"))
