@@ -114,6 +114,16 @@ packages may require it, but only pushes the new value now.
  (defun startup--rescale-elt-match-p (font-pattern font-object)
    "Test whether FONT-OBJECT matches an element of `face-font-rescale-alist'.
  FONT-OBJECT is a font-object that specifies a font to test.
+@@ -774,9 +774,6 @@ It is the default value of the variable `top-level'."
+       (unwind-protect
+ 	  (command-line)
+ 
+-        (when (featurep 'native-compile)
+-          (startup--update-eln-cache))
+-
+ 	;; Do this again, in case .emacs defined more abbreviations.
+ 	(if default-directory
+ 	    (setq default-directory (abbreviate-file-name default-directory)))
 @@ -1449,12 +1434,6 @@ command-line
        startup-init-directory)))
    (setq early-init-file user-init-file)
@@ -249,13 +259,13 @@ packages may require it, but only pushes the new value now.
 +    filename = rel_name;
 +
 +  Lisp_Object bogus_dirs =
-+    Fgetenv_Internal (build_string ("NATIVE_COMP_BOGUS_DIRS"), Qnil);
++    Fgetenv_internal (build_string ("NATIVE_COMP_BOGUS_DIRS"), Qnil);
 +  if (!NILP (bogus_dirs))
      {
 -      Lisp_Object match_idx =
 -	Fstring_match (XCAR (lds_re_tail), filename, Qnil, Qnil);
 -      if (BASE_EQ (match_idx, make_fixnum (0)))
-+      tail = CALL2I (split-string, bogus_dirs, build_string (":"));
++      tail = CALLNI (split-string, bogus_dirs, build_string (":"));
 +
 +      FOR_EACH_TAIL_SAFE (tail)
  	{
