@@ -3,8 +3,8 @@ name: Update Emacs
 # Cron translator: <https://cron-checker.com/>.
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * 1"         # At 12:00 AM, only on Monday.
+  # schedule:
+  #   - cron: "0 0 * * 1"         # At 12:00 AM, only on Monday.
 
 jobs:
   update-emacs:
