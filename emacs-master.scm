@@ -26,6 +26,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages python)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages xorg)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -131,7 +132,8 @@
     ;; "python-shell--convert-file-name-to-send-1" test requires python3.
     (native-inputs
      (modify-inputs (package-native-inputs emacs-next-minimal)
-       (append python-3)))))
+       (append git-minimal ;; package-vc tests require git.
+               python-3)))))
 
 (define (masterize-name emacs)
   (when (eq? (package-name emacs) "emacs-next")
@@ -165,8 +167,9 @@
                               (inputs (package-inputs emacs))
                               ;; "python-shell--convert-file-name-to-send-1" test requires python3.
                               (native-inputs
-                               (modify-inputs (package-native-inputs emacs)
-                                 (append python-3))))
+                               (modify-inputs (package-native-inputs emacs-next-minimal)
+                                 (append git-minimal ;; package-vc tests require git.
+                                         python-3))))
   (package
     (inherit emacs)
     (name (or name (masterize-name emacs)))
