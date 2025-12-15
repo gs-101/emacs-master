@@ -1,8 +1,8 @@
 #+title: Emacs Master
 #+OPTIONS: f:t
 
-#+html: <a href="https://github.com/gs-101/emacs-master/actions/workflows/update-emacs.yml"><img src="https://github.com/gs-101/emacs-master/actions/workflows/update-emacs.yml/badge.svg"></a>
-#+html: <a href="https://github.com/gs-101/emacs-master/actions/workflows/build-emacs.yml"><img src="https://github.com/gs-101/emacs-master/actions/workflows/build-emacs.yml/badge.svg"></a>
+#+html: <a href="https://github.com/gs-101/emacs-master/actions/workflows/update-emacs.yaml"><img src="https://github.com/gs-101/emacs-master/actions/workflows/update-emacs.yaml/badge.svg"></a>
+#+html: <a href="https://github.com/gs-101/emacs-master/actions/workflows/build-emacs.yaml"><img src="https://github.com/gs-101/emacs-master/actions/workflows/build-emacs.yaml/badge.svg"></a>
 
 #+begin_quote
 [!NOTE]
@@ -16,7 +16,7 @@ Guix channel that checks emacs upstream for updates every week, updating the pac
 
 This channel is sort of a fork of divya-lambda[fn:1], which features a non-automated build of =emacs-master=, taken from guix-channel-emacs-master[fn:2].
 
-Commit updates are made with a [[./.github/workflows/emacs-master.yml][GitHub Actions workflow]], and are automatically signed[fn:3].
+Commit updates are made with a [[./.github/workflows/emacs-master.yaml][GitHub Actions workflow]], and are automatically signed[fn:3].
 
 * Channel Definition
 
