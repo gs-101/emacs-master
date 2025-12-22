@@ -35,14 +35,14 @@
   #:use-module (guix download))
 
 (define emacs-master-commit "1e9dca9ba2a64e6379883e86a70c1c9d08fe0b33")
-(define emacs-master-igc-commit "f782dd29fb31c2f42429be1e9db4d95b85beb39f")
+(define emacs-master-igc-commit "03b258fe443ef1cbdeea516d8cf85077e5d6a3dc")
 
 ;; Returns the first seven characters of a commit.
 (define (shorthand-commit commit)
   (string-drop-right commit 33))
 
 (define emacs-master-hash "0d5wqchzxfy41racrgg8dq226fvi8id716yq1az7gzg4p4p9ra1q")
-(define emacs-master-igc-hash "1q5kj8j9apy2lgpgfpvw3sda9bgal0z8z5gbqflqlj9764d6g74w")
+(define emacs-master-igc-hash "1n2i9bv552fb3qhy8gi4ci29fgrdn6w9dc1aqi6ndxls4pbpp2n8")
 
 (define patches-path "patches/")
 
@@ -231,10 +231,18 @@
                 (string-append "RUN_TEMACS= "
                                #$libfaketime
                                "/bin/faketime -m -f '" release-date "'"
-                               " ./temacs")))))
+                               " ./temacs"))))
+     ((#:phases phases)
+      #~(modify-phases #$phases
+          (add-before 'configure 'fix-mps-build
+            (lambda _
+              (substitute* "mps/configure.ac"
+                ;; "tool/autoconf/build-aux" is an empty directory.
+                (("AC_CONFIG_AUX_DIR")
+                 "# AC_CONFIG_AUX_DIR")))))))
    #:inputs
    (modify-inputs (package-inputs emacs)
-     (append (@@ (mps) mps)))))
+     (append automake))))
 (define-public emacs-master-pgtk-igc
   (package/inherit emacs-master-igc
     (name "emacs-master-pgtk-igc")
