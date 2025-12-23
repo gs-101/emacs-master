@@ -218,7 +218,8 @@
                               "emacs-pgtk-super-key-fix.patch"
                               "emacs-next-disable-jit-compilation.patch"
                               "emacs-next-exec-path.patch"
-                              "emacs-next-native-comp-fix-filenames.patch")))
+                              "emacs-next-native-comp-fix-filenames.patch"
+                              (from-patches "emacs-master-revert-remove-some-autoconf-generated-files.patch"))))
    #:version ; Different commit, different version.
    (git-version "31.0.50" "1" (shorthand-commit emacs-master-igc-commit))
    #:arguments
@@ -231,15 +232,7 @@
                 (string-append "RUN_TEMACS= "
                                #$libfaketime
                                "/bin/faketime -m -f '" release-date "'"
-                               " ./temacs"))))
-     ((#:phases phases)
-      #~(modify-phases #$phases
-          (add-before 'configure 'fix-mps-build
-            (lambda _
-              (substitute* "mps/configure.ac"
-                ;; "tool/autoconf/build-aux" is an empty directory.
-                (("AC_CONFIG_AUX_DIR")
-                 "# AC_CONFIG_AUX_DIR")))))))
+                               " ./temacs")))))
    #:inputs
    (modify-inputs (package-inputs emacs)
      (append automake))))
