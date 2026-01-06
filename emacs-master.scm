@@ -35,14 +35,14 @@
   #:use-module (guix download))
 
 (define emacs-master-commit "b64e39f1b9a418fda213da8781bb37995c796d3c")
-(define emacs-master-igc-commit "03b258fe443ef1cbdeea516d8cf85077e5d6a3dc")
+(define emacs-master-igc-commit "02dac8561167d827dcbc38cc74a5bdea84ab59a3")
 
 ;; Returns the first seven characters of a commit.
 (define (shorthand-commit commit)
   (string-drop-right commit 33))
 
 (define emacs-master-hash "0y9cj7da1dsaajb4bw9nhkv4z3dwrs6cqnf87ad3z0jbbylhsjlq")
-(define emacs-master-igc-hash "1n2i9bv552fb3qhy8gi4ci29fgrdn6w9dc1aqi6ndxls4pbpp2n8")
+(define emacs-master-igc-hash "1fcw98fkj6cz5dxxsyry1xpfnw62gy5sma3r4wmn0dhb2nrxqw95")
 
 (define patches-path "patches/")
 
@@ -236,6 +236,7 @@
    #:inputs
    (modify-inputs (package-inputs emacs)
      (append automake))))
+
 (define-public emacs-master-pgtk-igc
   (package/inherit emacs-master-igc
     (name "emacs-master-pgtk-igc")
