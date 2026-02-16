@@ -89,8 +89,9 @@
      "tramp-test50-remote-load-path"
      "lua-ts-test-auto-close-block-comments"
      ;; Tests that are failing for now.
-     "python-hideshow-hide-levels-1"
-     "python-hideshow-hide-levels-2"
+     "diary-icalendar-test-import-bug-22092"
+     "diary-icalendar-test-import-bug-33277"
+     "diary-icalendar-test-import-with-timezone"
      ;; For emacs-master-igc.
      "module--test-assertions--call-emacs-from-gc"
      "process-tests/fd-setsize-no-crash/make-process"
