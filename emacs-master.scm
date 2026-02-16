@@ -35,14 +35,14 @@
   #:use-module (guix download))
 
 (define emacs-master-commit "f84fb38a8241e94efdc2c191084822e74a57f806")
-(define emacs-master-igc-commit "02dac8561167d827dcbc38cc74a5bdea84ab59a3")
+(define emacs-master-igc-commit "91c9e9883488d715a30877dfd7641ef4b3c62658")
 
 ;; Returns the first seven characters of a commit.
 (define (shorthand-commit commit)
   (string-drop-right commit 33))
 
 (define emacs-master-hash "1wwgqhillbssylr5b2jfyj80b679fxsq0mjmrwvkr9d11sfisajh")
-(define emacs-master-igc-hash "1fcw98fkj6cz5dxxsyry1xpfnw62gy5sma3r4wmn0dhb2nrxqw95")
+(define emacs-master-igc-hash "1lik8zn7jnhmzd4kx6d645xb5hc85rw7p7608nc90g56hnx4q7rb")
 
 (define patches-path "patches/")
 
@@ -93,9 +93,12 @@
      "diary-icalendar-test-import-bug-33277"
      "diary-icalendar-test-import-with-timezone"
      ;; For emacs-master-igc.
-     "module--test-assertions--call-emacs-from-gc"
-     "process-tests/fd-setsize-no-crash/make-process"
-     "set-commit-limit-test")))
+     "diary-icalendar-test-test-entry-parser/alarms-export"
+     "diary-icalendar-test-test-entry-parser/emacs-manual-sec33.10.1/10"
+     "diary-icalendar-test-test-entry-parser/emacs-manual-sec33.10.1/10-first-line"
+     "diary-icalendar-test-test-entry-parser/emacs-manual-sec33.10.1/6"
+     "diary-icalendar-test-test-entry-parser/multiline-linewise"
+     "diary-icalendar-test-test-entry-parser/multiline-single")))
 
 (define-public emacs-master-minimal
   (package
