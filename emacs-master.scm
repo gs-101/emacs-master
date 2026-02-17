@@ -99,7 +99,7 @@
                               ;; But the arguments and inputs come from the
                               ;; originals to better fit their quirks.
                               (arguments
-                               (substitute-keyword-arguments (package-arguments emacs-next-minimal)
+                               (substitute-keyword-arguments (package-arguments emacs)
                                  ((#:make-flags flags #~'())
                                   #~(list (let ((release-date "2025-08-14 05:04:03"))
                                             (string-append "RUN_TEMACS= "
