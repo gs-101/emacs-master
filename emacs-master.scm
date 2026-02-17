@@ -49,57 +49,6 @@
 (define (from-patches patch)
   (string-append patches-path patch))
 
-;; From emacs.scm.
-(define* (emacs-ert-selector excluded-tests #:key run-nativecomp run-expensive run-unstable)
-  "Create an ERT selector that excludes tests."
-  (string-append
-   "(not (or "
-   (if run-nativecomp
-       ""
-       "(tag :nativecomp) ")
-   (if run-expensive
-       ""
-       "(tag :expensive-test) ")
-   (if run-unstable
-       ""
-       "(tag :unstable) ")
-   (string-join
-    (map
-     (lambda (test)
-       (string-append "\\\"" test "\\\""))
-     excluded-tests))
-   "))"))
-
-(define emacs-master-selector
-  (emacs-ert-selector
-   '("bytecomp--fun-value-as-head"
-     "esh-util-test/path/get-remote"
-     "esh-var-test/path-var/preserve-across-hosts"
-     "ffap-tests--c-path"
-     "find-func-tests--locate-macro-generated-symbols"
-     "grep-tests--rgrep-abbreviate-properties-darwin"
-     "grep-tests--rgrep-abbreviate-properties-gnu-linux"
-     "grep-tests--rgrep-abbreviate-properties-windows-nt-dos-semantics"
-     "grep-tests--rgrep-abbreviate-properties-windows-nt-sh-semantics"
-     "info-xref-test-makeinfo"
-     "man-tests-find-header-file"
-     "tab-bar-tests-quit-restore-window"
-     "tramp-test48-remote-load-path"
-     "tramp-test49-remote-load-path"
-     "tramp-test50-remote-load-path"
-     "lua-ts-test-auto-close-block-comments"
-     ;; Tests that are failing for now.
-     "diary-icalendar-test-import-bug-22092"
-     "diary-icalendar-test-import-bug-33277"
-     "diary-icalendar-test-import-with-timezone"
-     ;; For emacs-master-igc.
-     "diary-icalendar-test-test-entry-parser/alarms-export"
-     "diary-icalendar-test-test-entry-parser/emacs-manual-sec33.10.1/10"
-     "diary-icalendar-test-test-entry-parser/emacs-manual-sec33.10.1/10-first-line"
-     "diary-icalendar-test-test-entry-parser/emacs-manual-sec33.10.1/6"
-     "diary-icalendar-test-test-entry-parser/multiline-linewise"
-     "diary-icalendar-test-test-entry-parser/multiline-single")))
-
 (define-public emacs-master-minimal
   (package
     (inherit emacs-next-minimal)
@@ -119,25 +68,17 @@
                                 "emacs-fix-scheme-indent-function.patch"
                                 "emacs-native-comp-driver-options.patch"
                                 "emacs-native-comp-pin-packages.patch"
-                                "emacs-pgtk-super-key-fix.patch"))
-       (snippet
-        '(for-each delete-file-recursively
-                   '("test/lisp/textmodes/ispell-resources"
-                     "test/lisp/textmodes/ispell-tests")))))
+                                "emacs-pgtk-super-key-fix.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments emacs-next-minimal)
        ((#:make-flags flags #~'())
-        #~(list (string-append "SELECTOR=" #$emacs-master-selector)
-                (let ((release-date "2025-08-14 05:04:03"))
+        #~(list (let ((release-date "2025-08-14 05:04:03"))
                   (string-append "RUN_TEMACS= "
                                  #$libfaketime
                                  "/bin/faketime -m -f '" release-date "'"
-                                 " ./temacs"))))))
-    ;; "python-shell--convert-file-name-to-send-1" test requires python3.
-    (native-inputs
-     (modify-inputs (package-native-inputs emacs-next-minimal)
-       (append git-minimal ;; package-vc tests require git.
-               python-3)))))
+                                 " ./temacs"))))
+       ((#:tests? tests #~'())
+        #f)))))
 
 (define (masterize-name emacs)
   (when (eq? (package-name emacs) "emacs-next")
@@ -158,22 +99,17 @@
                               ;; But the arguments and inputs come from the
                               ;; originals to better fit their quirks.
                               (arguments
-                               (substitute-keyword-arguments (package-arguments emacs)
-                                 ;; But only in part. We need to use the text
-                                 ;; excluder from here!
+                               (substitute-keyword-arguments (package-arguments emacs-next-minimal)
                                  ((#:make-flags flags #~'())
-                                  #~(list (string-append "SELECTOR=" #$emacs-master-selector)
-                                          (let ((release-date "2025-08-14 05:04:03"))
+                                  #~(list (let ((release-date "2025-08-14 05:04:03"))
                                             (string-append "RUN_TEMACS= "
                                                            #$libfaketime
                                                            "/bin/faketime -m -f '" release-date "'"
-                                                           " ./temacs"))))))
+                                                           " ./temacs"))))
+                                 ((#:tests? tests #~'())
+                                  #f)))
                               (inputs (package-inputs emacs))
-                              ;; "python-shell--convert-file-name-to-send-1" test requires python3.
-                              (native-inputs
-                               (modify-inputs (package-native-inputs emacs-next-minimal)
-                                 (append git-minimal ;; package-vc tests require git.
-                                         python-3))))
+                              (native-inputs (package-native-inputs emacs)))
   (package
     (inherit emacs)
     (name (or name (masterize-name emacs)))
@@ -231,12 +167,13 @@
      ((#:configure-flags flags #~'())
       #~(cons* "--with-mps=yes" #$flags))
      ((#:make-flags flags #~'())
-      #~(list (string-append "SELECTOR=" #$emacs-master-selector)
-              (let ((release-date "2025-08-14 05:04:03"))
+      #~(list (let ((release-date "2025-08-14 05:04:03"))
                 (string-append "RUN_TEMACS= "
                                #$libfaketime
                                "/bin/faketime -m -f '" release-date "'"
-                               " ./temacs")))))
+                               " ./temacs"))))
+     ((#:tests? tests #~'())
+      #f))
    #:inputs
    (modify-inputs (package-inputs emacs)
      (append automake))))
