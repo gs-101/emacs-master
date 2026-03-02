@@ -62,11 +62,11 @@
               (commit emacs-master-commit)))
        (sha256
         (base32 emacs-master-hash))
-       (patches (search-patches (from-patches "emacs-master-disable-jit-compilation.patch")
-                                (from-patches "emacs-master-exec-path.patch")
-                                (from-patches "emacs-master-native-comp-fix-filenames.patch")
+       (patches (search-patches "emacs-next-disable-jit-compilation.patch"
+                                "emacs-next-exec-path.patch"
                                 "emacs-fix-scheme-indent-function.patch"
                                 "emacs-native-comp-driver-options.patch"
+                                "emacs-next-native-comp-fix-filenames.patch"
                                 "emacs-native-comp-pin-packages.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments emacs-next-minimal)
@@ -152,12 +152,13 @@
       (base32 emacs-master-igc-hash))
      ;; Patches are cherry-picked because this branch takes some time to
      ;; catch-up with master.
-     (patches (search-patches "emacs-fix-scheme-indent-function.patch"
-                              "emacs-native-comp-pin-packages.patch"
-                              "emacs-next-disable-jit-compilation.patch"
-                              "emacs-next-exec-path.patch"
-                              "emacs-next-native-comp-fix-filenames.patch"
-                              (from-patches "emacs-master-revert-remove-some-autoconf-generated-files.patch"))))
+     (patches (search-patches "emacs-next-disable-jit-compilataion.patch"
+			      "emacs-next-exec-path.patch"
+			      "emacs-fix-scheme-indent-function.patch"
+			      "emacs-native-comp-driver-options.patch"
+			      "emacs-next-native-comp-fix-filenames.patch"
+			      "emacs-native-comp-pin-packages.patch"
+			      (from-patches "emacs-master-revert-remove-some-autoconf-generated-files.patch"))))
    #:version ; Different commit, different version.
    (git-version "31.0.50" "1" (shorthand-commit emacs-master-igc-commit))
    #:arguments
