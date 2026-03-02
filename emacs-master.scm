@@ -67,8 +67,7 @@
                                 (from-patches "emacs-master-native-comp-fix-filenames.patch")
                                 "emacs-fix-scheme-indent-function.patch"
                                 "emacs-native-comp-driver-options.patch"
-                                "emacs-native-comp-pin-packages.patch"
-                                "emacs-pgtk-super-key-fix.patch"))))
+                                "emacs-native-comp-pin-packages.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments emacs-next-minimal)
        ((#:make-flags flags #~'())
@@ -155,7 +154,6 @@
      ;; catch-up with master.
      (patches (search-patches "emacs-fix-scheme-indent-function.patch"
                               "emacs-native-comp-pin-packages.patch"
-                              "emacs-pgtk-super-key-fix.patch"
                               "emacs-next-disable-jit-compilation.patch"
                               "emacs-next-exec-path.patch"
                               "emacs-next-native-comp-fix-filenames.patch"
