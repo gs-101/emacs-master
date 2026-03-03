@@ -152,7 +152,7 @@
       (base32 emacs-master-igc-hash))
      ;; Patches are cherry-picked because this branch takes some time to
      ;; catch-up with master.
-     (patches (search-patches "emacs-next-disable-jit-compilataion.patch"
+     (patches (search-patches "emacs-next-disable-jit-compilation.patch"
 			      "emacs-next-exec-path.patch"
 			      "emacs-fix-scheme-indent-function.patch"
 			      "emacs-native-comp-driver-options.patch"
