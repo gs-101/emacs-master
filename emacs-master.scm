@@ -70,12 +70,6 @@
                                 "emacs-native-comp-pin-packages.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments emacs-next-minimal)
-       ((#:make-flags flags #~'())
-        #~(list (let ((release-date "2025-08-14 05:04:03"))
-                  (string-append "RUN_TEMACS= "
-                                 #$libfaketime
-                                 "/bin/faketime -m -f '" release-date "'"
-                                 " ./temacs"))))
        ((#:tests? tests #~'())
         #f)))))
 
@@ -99,12 +93,6 @@
                               ;; originals to better fit their quirks.
                               (arguments
                                (substitute-keyword-arguments (package-arguments emacs)
-                                 ((#:make-flags flags #~'())
-                                  #~(list (let ((release-date "2025-08-14 05:04:03"))
-                                            (string-append "RUN_TEMACS= "
-                                                           #$libfaketime
-                                                           "/bin/faketime -m -f '" release-date "'"
-                                                           " ./temacs"))))
                                  ((#:tests? tests #~'())
                                   #f)))
                               (inputs (package-inputs emacs))
@@ -165,12 +153,6 @@
    (substitute-keyword-arguments (package-arguments emacs)
      ((#:configure-flags flags #~'())
       #~(cons* "--with-mps=yes" #$flags))
-     ((#:make-flags flags #~'())
-      #~(list (let ((release-date "2025-08-14 05:04:03"))
-                (string-append "RUN_TEMACS= "
-                               #$libfaketime
-                               "/bin/faketime -m -f '" release-date "'"
-                               " ./temacs"))))
      ((#:tests? tests #~'())
       #f))
    #:inputs
