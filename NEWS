@@ -1,0 +1,9 @@
+(channel-news
+ (version 0)
+ (entry (commit "4450a0c9230a6db5a3eaaf81fcf8f0bf64a798e9")
+        (title (en "Stepping down as emacs-master maintainer"))
+        (body (en "Greetings,
+I no longer use GNU Guix and have since migrated to NixOS. That means I no
+longer plan to maintain this channel. It will still update automatically
+every monday, but I'll no longer fix any issues that might arise. Thanks for
+using this channel."))))
