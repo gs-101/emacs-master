@@ -1,4 +1,4 @@
 (channel
- (news-file "NEWS")
  (version 0)
- (url "https://github.com/gs-101/emacs-master.git"))
+ (url "https://github.com/gs-101/emacs-master.git")
+ (news-file "NEWS"))
